@@ -6,18 +6,16 @@ up() {
   
   ##
   echo "Creating astro folder.."
-  mkdir astro
+  #mkdir astro ## uncomment if you're running for the first time
   cd ./astro
 
   ## 
   echo "Initializing Astro dev component.."
-  astro dev init
+  #astro dev init ## uncomment if you're running for the first time
 
   ##
   echo "Starting Airflow Services"
   astro dev start --no-cache
-
-
 
 }
 
