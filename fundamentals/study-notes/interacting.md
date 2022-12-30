@@ -5,6 +5,8 @@
 ## Contents 
 - <a href="#3-ways">Three ways to interact with Airflow</a>
 - <a href="#ui">Diving into the Airflow UI</a>
+- <a href="#cli">Important CLI Commands to know</a>
+- <a href="#rest">A little more about the Airflow REST API</a>
 
 ---
 <p id="3-ways"></p>
@@ -40,5 +42,24 @@
 
 <p align="justify">
 &ensp;&ensp;&ensp;&ensp;
+</p>
+
+
+---
+<p id="cli"></p>
+
+## Important CLI Commands to know
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp; (_TODO_)
+</p>
+
+---
+<p id="rest"></p>
+
+## A little more about the Airflow REST API
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp; (_TODO_)
 </p>
 
