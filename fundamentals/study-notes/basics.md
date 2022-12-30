@@ -108,6 +108,7 @@
 </p>
 
 ### Multi Nodes: scaling up Airflow
+
 <img src="../images/multi-node.jpg" alt="drawing" width="100%"/>
 
 <p align="justify">
@@ -175,16 +176,19 @@ The idea of a DAG is to wrap up all of our tasks, the relationship between them,
 - Sensor Operator: usefull when we want to wait for something to happen before moving to the next task. For example, if we want to wait for a file to be loaded in to a S3 storage to, then, download that file with a task, we could use a File Sensor Operator for that.
 
 ### Tasks
+
 <p align="justify">
 &ensp;&ensp;&ensp;&ensp;A Task is basically an instance of an Operator. Once it is ready to be scheduled, it becomes a Task Instance Object: it represents a specific run of a task -> DAG + Task + point in time.
 </p>
 
 ### Dependencies
+
 <p align="justify">
 &ensp;&ensp;&ensp;&ensp;It is relationships between tasks. With dependencies, we can set upstream and downstream tasks dependencies.
 </p>
 
 ### Workflow
+
 <p align="justify">
 &ensp;&ensp;&ensp;&ensp;A Workflow is the combination of all concepts we saw before.
 </p>
@@ -205,16 +209,19 @@ The idea of a DAG is to wrap up all of our tasks, the relationship between them,
 
 ---
 ## Extras and Providers
+
 <p align="justify">
 &ensp;&ensp;&ensp;&ensp;Airflow's installation brings us only what we need to get started building our DAGs. For example, we we need to send an email after a task has finished, Airflow already brings that as a core functionality. However, most of the times, we need some additional functionalities, regarding both to Airflow's settings and to our DAG execution. That's where **Extras** and **Provicers** come in.
 </p>
 
 ### Extras
+
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;Extras are like a big package that install all dependencies needed by the functionality we want. Once we install an Extra, the Airflow's Core is extended (the new Extra functionality becomes part of the Airflow's Core we have installed). For example, we could need a password authentication for users. In this case, we would need to install a password Extra. According to <a href="https://airflow.apache.org/docs/apache-airflow/stable/extra-packages-ref.html">the documentation</a>, Extras don't usually install Providers, except by the `celery` and `cncf.kubernetes` extras, where in this is case they install some necessary python dependencies for the respective provided package.
+&ensp;&ensp;&ensp;&ensp;Extras are like a big package that install all dependencies needed by the functionality we want. Once we install an Extra, the Airflow's Core is extended (the new Extra functionality becomes part of the Airflow's Core we have installed). For example, we could need a password authentication for users. In this case, we would need to install a password Extra. According to <a href="https://airflow.apache.org/docs/apache-airflow/stable/extra-packages-ref.html">the documentation</a>, Extras don't usually install Providers, except by the "celery" and "cncf.kubernetes" extras, where in this is case they install some necessary python dependencies for the respective provided package.
 </p>
 
 ### Providers
+
 <p align="justify">
 &ensp;&ensp;&ensp;&ensp;Providers add functionalities on top of Airflow, but they is entirely separated fro mteh Airflow Core. That means a Provider can be updated without waiting for a update in Airflow. For example, if our pipeline needs to connect to a Postgres database, it won't find the connection by default along with Airflow. So, in this case, we would need to install the Postgres Provider.
 </p>
