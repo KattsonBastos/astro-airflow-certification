@@ -1,5 +1,7 @@
 # The Basics
 
+[back to fundamentals page](https://github.com/KattsonBastos/astro-airflow-certification/tree/main/fundamentals)
+
 <p align="justify">
 &ensp;&ensp;&ensp;&ensp;Let's get started with the essentials on Airflow's architecture and components, core concepts, and much more.
 </p>
