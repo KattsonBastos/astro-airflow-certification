@@ -1,7 +1,23 @@
 # The Basics
 
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;Let's get started with the essentials on Airflow's architecture and components, core concepts, and much more.
+</p>
+
+## Contents <p id="contents"></p>
+- <a href="#why">Why to use Airflow and why to use it instead of Cron Jobs (or any other)?/a>
+- <a href="#benefits">Airflow and its Benefits/a>
+- <a href="#airflow-not">What Airflow is not/a>
+- <a href="#components">Airflow Core Components/a>
+- <a href="#architecture">Architectures: components working together/a>
+- <a href="#concepts">Core concepts we need to know /a>
+- <a href="#lifecycle">The lifecycle of a Task  /a>
+- <a href="#extras-providers">Extras and Providers /a>
+
 ---
-## Why to use Airflow and why to use it instead of Cron Jobs (or any other)?
+## Why to use Airflow and why to use it instead of Cron Jobs (or any other)? <p id="why"></p>
+
+[back to contents](#contents)
 
 <p align="justify">
 &ensp;&ensp;&ensp;&ensp;To answer that questions, let's image we are working on an ETL pipeline, extracting data from an API, transforming them with Dbt, and, finally, loading them into a database. What would happen if the request to the API falied? Or if the database goes down? If we have just a few pipelines to manage, it becomes simple to manage those exception. Even so, having a easier way to rerun our pipeline would be very helpful.
@@ -20,8 +36,11 @@
 </p>
 
 ---
-## Airflow and its Benefits
+## Airflow and its Benefits  <p id="benefits"></p>
 
+[back to contents](#contents)
+  
+  
 <p align="justify">
 &ensp;&ensp;&ensp;&ensp;According to <a href="https://airflow.apache.org/docs/apache-airflow/stable/index.html">the documentation</a>, Airflow is a platform (and open-source) used for workflow's <strong>development, scheduling, and monitoring</strong>. In addition, it allows us to build workflows connected with many other technologies, such as container's orchestrators and cloud services.
 </p>
@@ -43,8 +62,10 @@
 - Extensible: we can customize it as much as we need. In this way, we can create our own pluging and add it to Airflow.
 
 ---
-## What Airflow is not
+## What Airflow is not <p id="airflow-not"></p>
 
+[back to contents](#contents)
+  
 <p align="justify">
 &ensp;&ensp;&ensp;&ensp;It is important to say that Airflow is not a streaming or a data processing framework. Airflow can't be used as Spark for processing terabytes of data or to handle real-time data flow.
 </p>
@@ -54,8 +75,10 @@
 </p>
 
 ---
-## Airflow Core Components
+## Airflow Core Components <p id="components"></p>
 
+[back to contents](#contents)
+  
 <p align="justify">
 &ensp;&ensp;&ensp;&ensp;Under the hood, Airflow runs a lot of components:
 </p>
@@ -84,8 +107,10 @@
 </p>
 
 ---
-## Architectures: components working together
+## Architectures: components working together <p id="architecture"></p>
 
+[back to contents](#contents)
+  
 <p align="justify">
 &ensp;&ensp;&ensp;&ensp;There are thounsands of architectures we could use in Airflow, but let's start simple by taking a look at two types: one node and multi node archutectures.
 </p>
@@ -137,7 +162,9 @@
 </p>
 
 ---
-## Core concepts we need to know
+## Core concepts we need to know <p id="concepts"></p>
+  
+[back to contents](#contents)
 
 <p align="justify">
 &ensp;&ensp;&ensp;&ensp;In order to fully understand Airflow, we have to know some important concepts.
@@ -194,7 +221,9 @@ The idea of a DAG is to wrap up all of our tasks, the relationship between them,
 </p>
 
 ---
-## The lifecycle of a Task
+## The lifecycle of a Task <p id="lifecycle"></p>
+
+[back to contents](#contents)
 
 <p align="justify">
 &ensp;&ensp;&ensp;&ensp;The above image represents the lifecycle of a task in Airflow. We can summarize it as follows:
@@ -208,8 +237,12 @@ The idea of a DAG is to wrap up all of our tasks, the relationship between them,
 6. In the end, the Web Server updates the UI.
 
 ---
-## Extras and Providers
+## Extras and Providers <p id="extras-providers"></p>
 
+  
+[back to contents](#contents)
+
+  
 <p align="justify">
 &ensp;&ensp;&ensp;&ensp;Airflow's installation brings us only what we need to get started building our DAGs. For example, we we need to send an email after a task has finished, Airflow already brings that as a core functionality. However, most of the times, we need some additional functionalities, regarding both to Airflow's settings and to our DAG execution. That's where **Extras** and **Provicers** come in.
 </p>
@@ -225,3 +258,6 @@ The idea of a DAG is to wrap up all of our tasks, the relationship between them,
 <p align="justify">
 &ensp;&ensp;&ensp;&ensp;Providers add functionalities on top of Airflow, but they is entirely separated fro mteh Airflow Core. That means a Provider can be updated without waiting for a update in Airflow. For example, if our pipeline needs to connect to a Postgres database, it won't find the connection by default along with Airflow. So, in this case, we would need to install the Postgres Provider.
 </p>
+  
+---
+[back to contents](#contents)
