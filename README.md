@@ -7,5 +7,5 @@ This repository contains my personal study notes and practices related to my pre
 </p>
 
 ## Contents
-- [Apache Airflow Fundamentals Certification](/fundamentals/README.md)
+- [Apache Airflow Fundamentals Certification](/fundamentals)
 - Apache Airflow DAG Authoring Certification
