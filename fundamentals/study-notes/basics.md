@@ -4,18 +4,22 @@
 &ensp;&ensp;&ensp;&ensp;Let's get started with the essentials on Airflow's architecture and components, core concepts, and much more.
 </p>
 
-## Contents <p id="contents"></p>
-- <a href="#why">Why to use Airflow and why to use it instead of Cron Jobs (or any other)?/a>
-- <a href="#benefits">Airflow and its Benefits/a>
-- <a href="#airflow-not">What Airflow is not/a>
-- <a href="#components">Airflow Core Components/a>
-- <a href="#architecture">Architectures: components working together/a>
-- <a href="#concepts">Core concepts we need to know /a>
-- <a href="#lifecycle">The lifecycle of a Task  /a>
-- <a href="#extras-providers">Extras and Providers /a>
+<p id="contents"></p>
+
+## Contents 
+- <a href="#why">Why to use Airflow and why to use it instead of Cron Jobs (or any other)?</a>
+- <a href="#benefits">Airflow and its Benefits</a>
+- <a href="#airflow-not">What Airflow is not</a>
+- <a href="#components">Airflow Core Components</a>
+- <a href="#architecture">Architecture: components working together</a>
+- <a href="#concepts">Core concepts we need to know </a>
+- <a href="#lifecycle">The lifecycle of a Task</a>
+- <a href="#extras-providers">Extras and Providers </a>
 
 ---
-## Why to use Airflow and why to use it instead of Cron Jobs (or any other)? <p id="why"></p>
+<p id="why"></p>
+  
+## Why to use Airflow and why to use it instead of Cron Jobs (or any other)? 
 
 [back to contents](#contents)
 
@@ -36,7 +40,9 @@
 </p>
 
 ---
-## Airflow and its Benefits  <p id="benefits"></p>
+<p id="benefits"></p>
+  
+## Airflow and its Benefits  
 
 [back to contents](#contents)
   
@@ -62,7 +68,9 @@
 - Extensible: we can customize it as much as we need. In this way, we can create our own pluging and add it to Airflow.
 
 ---
-## What Airflow is not <p id="airflow-not"></p>
+<p id="airflow-not"></p>
+  
+## What Airflow is not 
 
 [back to contents](#contents)
   
@@ -75,7 +83,9 @@
 </p>
 
 ---
-## Airflow Core Components <p id="components"></p>
+<p id="components"></p>
+  
+## Airflow Core Components 
 
 [back to contents](#contents)
   
@@ -107,7 +117,10 @@
 </p>
 
 ---
-## Architectures: components working together <p id="architecture"></p>
+<p id="architecture"></p>
+  
+  
+## Architecture: components working together 
 
 [back to contents](#contents)
   
@@ -162,7 +175,9 @@
 </p>
 
 ---
-## Core concepts we need to know <p id="concepts"></p>
+<p id="concepts"></p>
+  
+## Core concepts we need to know
   
 [back to contents](#contents)
 
@@ -221,7 +236,10 @@ The idea of a DAG is to wrap up all of our tasks, the relationship between them,
 </p>
 
 ---
-## The lifecycle of a Task <p id="lifecycle"></p>
+<p id="lifecycle"></p>
+  
+  
+## The lifecycle of a Task 
 
 [back to contents](#contents)
 
@@ -237,7 +255,9 @@ The idea of a DAG is to wrap up all of our tasks, the relationship between them,
 6. In the end, the Web Server updates the UI.
 
 ---
-## Extras and Providers <p id="extras-providers"></p>
+<p id="extras-providers"></p>
+  
+## Extras and Providers 
 
   
 [back to contents](#contents)
