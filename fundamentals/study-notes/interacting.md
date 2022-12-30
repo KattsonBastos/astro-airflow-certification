@@ -13,6 +13,8 @@
 
 ## Three ways to interact with Airflow
 
+[back to contents](#contents)
+
 <p align="justify">
 &ensp;&ensp;&ensp;&ensp;There are three difference ways we can interact with Apache Airflow: User Interface, Command Line Interface, and a Rest API. So, let's take a brief look at them.
 </p>
@@ -40,8 +42,10 @@
 
 ## Diving into the Airflow UI
 
+[back to contents](#contents)
+
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;
+&ensp;&ensp;&ensp;&ensp;(_TODO_)
 </p>
 
 
@@ -49,6 +53,8 @@
 <p id="cli"></p>
 
 ## Important CLI Commands to know
+
+[back to contents](#contents)
 
 <p align="justify">
 &ensp;&ensp;&ensp;&ensp; (_TODO_)
@@ -58,6 +64,8 @@
 <p id="rest"></p>
 
 ## A little more about the Airflow REST API
+
+[back to contents](#contents)
 
 <p align="justify">
 &ensp;&ensp;&ensp;&ensp; (_TODO_)
