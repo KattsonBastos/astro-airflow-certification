@@ -187,8 +187,18 @@ The idea of a DAG is to wrap up all of our tasks, the relationship between them,
 &ensp;&ensp;&ensp;&ensp;A Workflow is the combination of all concepts we saw before.
 </p>
 
-## The lifecycle of a Task
+### The lifecycle of a Task
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;(TODO)
+&ensp;&ensp;&ensp;&ensp;The above image represents the lifecycle of a task in Airflow. We can summarize it as follows:
 </p>
+
+1. We start by creating a data pipeline in a file (we call it dag.py) and then adding it to a folder where we store all of our DAGs.
+2. Once the is created in the folder, it will be parsed by both the Web Server and the Scheduler. By default, the Web Server searches for DAGs in the folder for every 30 seconds, while the Scheduler searches for every five minutes.
+3. Once the DAG is parsed by both components, The Scheduler checks if the DAG is ready to be triggered and, if so, it creates a DagRun Object (an instance of our DAG) into the Metastore. However, since the DAG hasn't run yet, there's no info status. 
+4. In this case, with the task ready to be triggered, it is created a TaskInstance object with the state **"scheduled"**. Then, the Scheduler sends the task tot he Executor and, now, its status becomes **"queued"**. Once the task is queued, the Executor takes that task and execute it into a worker, changing it status to **"running"**.
+5. Once the task is finished, the Executor updates it status to **"success"** in the Metastore if no failures has occurred.
+6. In the end, the Web Server updates the UI.
+
+
+
