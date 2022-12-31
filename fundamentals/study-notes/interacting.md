@@ -44,9 +44,18 @@
 
 [back to contents](#contents)
 
+### DAG View
+
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;(_TODO_)
+&ensp;&ensp;&ensp;&ensp;Once we are logged in Airflow, the view is the DAGs View. It lists all DAGs we have in our DAGs folder. Besides that, it brings a lot of information, such as the datetime of the last run, the schedule, 
 </p>
+
+
+### Tree View
+
+### Graph View
+
+### Grantt View
 
 
 ---
