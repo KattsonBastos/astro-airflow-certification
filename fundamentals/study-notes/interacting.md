@@ -162,73 +162,61 @@
 </p>
 
 <p align="center">
-<style type="text/css">
-.tg  {border-collapse:collapse;border-color:#aaa;border-spacing:0;}
-.tg td{background-color:#fff;border-color:#aaa;border-style:solid;border-width:1px;color:#333;
-  font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;word-break:normal;}
-.tg th{background-color:#f38630;border-color:#aaa;border-style:solid;border-width:1px;color:#fff;
-  font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
-.tg .tg-pqre{background-color:#efefef;color:#000000;font-size:12px;font-weight:bold;text-align:center;vertical-align:top}
-.tg .tg-oj4h{background-color:#efefef;border-color:inherit;color:#000000;font-size:12px;font-weight:bold;text-align:center;
-  vertical-align:top}
-.tg .tg-f4iu{border-color:inherit;font-size:12px;text-align:center;vertical-align:top}
-.tg .tg-rg0h{font-size:12px;text-align:center;vertical-align:top}
-</style>
-<table class="tg">
+<table>
 <thead>
   <tr>
-    <th class="tg-pqre">Command</th>
-    <th class="tg-oj4h">Description</th>
+    <th>Command</th>
+    <th>Description</th>
   </tr>
 </thead>
 <tbody>
   <tr>
-    <td class="tg-f4iu">airflow db init</td>
-    <td class="tg-f4iu">It allows us to both initialize the Database in Airflow and to create the needed files.</td>
+    <td>airflow db init</td>
+    <td>It allows us to both initialize the Database in Airflow and to create the needed files.</td>
   </tr>
   <tr>
-    <td class="tg-f4iu">airflow db upgrade</td>
-    <td class="tg-f4iu">Upgrade the schema of the Metadata.</td>
+    <td>airflow db upgrade</td>
+    <td>Upgrade the schema of the Metadata.</td>
   </tr>
   <tr>
-    <td class="tg-f4iu">airflow db reset</td>
-    <td class="tg-f4iu">Remove everything in the database (not recommended for production environments).</td>
+    <td>airflow db reset</td>
+    <td>Remove everything in the database (not recommended for production environments).</td>
   </tr>
   <tr>
-    <td class="tg-rg0h">airflow webserver</td>
-    <td class="tg-rg0h">Start the Web Server.</td>
+    <td>airflow webserver</td>
+    <td>Start the Web Server.</td>
   </tr>
   <tr>
-    <td class="tg-rg0h">airflow scheduler</td>
-    <td class="tg-rg0h">Start the Scheduler.</td>
+    <td>airflow scheduler</td>
+    <td>Start the Scheduler.</td>
   </tr>
   <tr>
-    <td class="tg-rg0h">airflow celery worker</td>
-    <td class="tg-rg0h">Start the Celery Worker.</td>
+    <td>airflow celery worker</td>
+    <td>Start the Celery Worker.</td>
   </tr>
   <tr>
-    <td class="tg-rg0h">airflow dags pause/unpause [dag_id]</td>
-    <td class="tg-rg0h">Turn on/off the DAG.</td>
+    <td>airflow dags pause/unpause [dag_id]</td>
+    <td>Turn on/off the DAG.</td>
   </tr>
   <tr>
-    <td class="tg-rg0h">airflow dags trigger <span style="font-weight:400;font-style:normal">[dag_id]</span></td>
-    <td class="tg-rg0h">Trigger the given DAG.</td>
+    <td>airflow dags trigger [dag_id]</td>
+    <td>Trigger the given DAG.</td>
   </tr>
   <tr>
-    <td class="tg-rg0h">airflow dags list</td>
-    <td class="tg-rg0h">List all DAGs we have in AIrflow.</td>
+    <td>airflow dags list</td>
+    <td>List all DAGs we have in AIrflow.</td>
   </tr>
   <tr>
-    <td class="tg-rg0h">airflow task list <span style="font-weight:400;font-style:normal">[dag_id]</span></td>
-    <td class="tg-rg0h">List all tasks of a DAG.</td>
+    <td>airflow task list [dag_id]</td>
+    <td>List all tasks of a DAG.</td>
   </tr>
   <tr>
-    <td class="tg-rg0h">airflow tasks test <span style="font-weight:400;font-style:normal">[dag_id]</span> [task_id] [execution_date_or_run_id]</td>
-    <td class="tg-rg0h">Execute a specific task without checking its dependencies or recording its state in the database.</td>
+    <td>airflow tasks test [dag_id] [task_id] [execution_date_or_run_id]</td>
+    <td>Execute a specific task without checking its dependencies or recording its state in the database.</td>
   </tr>
   <tr>
-    <td class="tg-rg0h">airflow dags backfill -s [start_date] -e [end_date] [dag_id]</td>
-    <td class="tg-rg0h">Rerun past DAGs.</td>
+    <td>airflow dags backfill -s [start_date] -e [end_date] [dag_id]</td>
+    <td>Rerun past DAGs.</td>
   </tr>
 </tbody>
 </table>
