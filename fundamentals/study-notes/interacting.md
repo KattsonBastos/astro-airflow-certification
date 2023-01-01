@@ -242,6 +242,10 @@
 [back to contents](#contents)
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp; (_TODO_)
+&ensp;&ensp;&ensp;&ensp; Airflow 2.0 version brought a stable REST API that we can now definitely use it in production. All the references of this version can be found in the <a href="https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html">Airflow Documentation for the Stable REST API</a>. The reference brings descriptions for everything we need to interact with the API: endpoints, authentication, CRUD operations, and so on.
+</p>
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;With that API, we can build new tools on top of Airflow as well as interacting with Airflow through other tools as long as we're able to send requests.
 </p>
 
