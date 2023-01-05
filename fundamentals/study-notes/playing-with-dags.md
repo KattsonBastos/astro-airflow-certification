@@ -102,7 +102,7 @@ with DAG(dag_id="etl_pipeline") as dag:
 </p>
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;The scheduling interval defines the interval at which our DAGs gets (in our example, a 24h interval). The interval can be in seconds, minutes, hours, and so on.
+&ensp;&ensp;&ensp;&ensp;The scheduling interval defines the interval at which our DAGs gets (in our example, a 24h interval). The interval can be in seconds, minutes, hours, and so on. A DAG may or may not have a scheduling interval.
 </p>
 
 <p align="justify">
@@ -117,7 +117,7 @@ with DAG(dag_id="etl_pipeline") as dag:
 &ensp;&ensp;&ensp;&ensp;Until now we saw the concepts, but let's take a look at the code level.
 </p>
 
-### Start date and scheduling interval in code
+### Start date in code
 
 <p align="justify">
 &ensp;&ensp;&ensp;&ensp;In Airflow we can specify a start date both in the DAG level or in a task (operator) level. If we apply in the DAG, it will be applying to all tasks (operators) in the DAG. However, specifying it directly in the task is not a common use since we can have an execution mess between the tasks dates.
@@ -140,7 +140,6 @@ with DAG(
         task_id='extract'
     )
 
-
 ```
 
 <p align="justify">
@@ -153,6 +152,64 @@ with DAG(
 
 &ensp;&ensp;&ensp;&ensp;Secondly, it is recommended to set a fixed start date time intead of a dinamically one (it is not a good idea to use datetime.now()). That's because, as we saw before, the DAG is triggered only when the start_date + scheduling_interval has elapsed. It turns out that if we use datetime.now(), the start_date constantly changes and, then, the time to trigger the DAG never comes. SO, we end up with a DAG that never get triggered.
 </p>
+
+
+### Scheduling interval in code
+
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;The scheduling interval is as easier as the start date to be specified: we just have to pass the value to the schedule_interval. This value can be both a cron expression or a timedelta python object. Airflow already brings us some pre defined crons. The image bellow shows some Airflow's 'preset' crons as long as its respective cron tab expression.
+</p>
+
+<img src="../images/presets.png" alt="drawing" width="100%"/>
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;So, if we want to specify a daily trigger to our DAG, we jsut have to do the following:
+</p>
+
+
+```python
+from airflow import DAG
+
+from datetime import datetime
+
+with DAG(
+    dag_id="etl_pipeline",
+    start_date=datetime(2023,1,1),
+    schedule_interval='@daily'
+) as dag:
+
+    extract = Operator(
+        task_id='extract'
+    )
+
+```
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;If we want to use timedelta instead of a cron expresson, we can simply pass it as argument:
+</p>
+
+```python
+from airflow import DAG
+
+from datetime import datetime
+
+with DAG(
+    dag_id="etl_pipeline",
+    start_date=datetime(2023,1,1),
+    schedule_interval=timedelta(days=1)
+) as dag:
+
+    extract = Operator(
+        task_id='extract'
+    )
+
+```
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;But what's the difference between cron and timedelta? Well, cron expressions are absolute. That means if we specify that we want to run our dag at 10 AM, it will be triggered at 10 AM. The timedelta is relative: if we specify we want to run our DAG with a timedelta(hours=10), it will be triggered every 10 hours starting from the previsous execution date.
+</p>
+
 
 ---
 <p id="bf"></p>
