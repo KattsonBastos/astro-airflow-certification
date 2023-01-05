@@ -88,7 +88,7 @@ with DAG(dag_id="etl_pipeline") as dag:
 ---
 <p id="dates"></p>
 
-## Start Date and Scheduling Interval
+## Start Date, Execution Date, Scheduling Interval, and End Date
 
 [back to contents](#contents)
 
@@ -98,7 +98,7 @@ with DAG(dag_id="etl_pipeline") as dag:
 </p>
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;The start date can be any date in the past or in the future. Basically, we can think of it as the initial date of the data interval we want to process in our pipeline. Taking our above example, the start date is 2023/01/01 00:00. It is recommended to set a fixed start date time (it is not a good idea to use datetime.now()).
+&ensp;&ensp;&ensp;&ensp;The start date can be any date in the past or in the future. Basically, we can think of it as the initial date of the data interval we want to process in our pipeline. Taking our above example, the start date is 2023/01/01 00:00.
 </p>
 
 <p align="justify">
@@ -107,6 +107,51 @@ with DAG(dag_id="etl_pipeline") as dag:
 
 <p align="justify">
 &ensp;&ensp;&ensp;&ensp;The thing is that Airflow won't trigger our dag at the start date, but only when the start date plus the scheduling interval have elapsed. So, if our start date is setted to 2023/01/01 00:00 and we setted a daily interval, our DAG is effectively triggered at 2023/01/02 00:00 (one day elapsed) and then it will process all data from the start date.
+</p>
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;Finally, the End Date is used to pass a date we don't want to trigger our DAG anymore after it.
+</p>
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;Until now we saw the concepts, but let's take a look at the code level.
+</p>
+
+### Start date and scheduling interval in code
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;In Airflow we can specify a start date both in the DAG level or in a task (operator) level. If we apply in the DAG, it will be applying to all tasks (operators) in the DAG. However, specifying it directly in the task is not a common use since we can have an execution mess between the tasks dates.
+<br>
+
+&ensp;&ensp;&ensp;&ensp;In order to pass a date in Airflow DAG, we need a datetime object. So, we just have to import the built in python datetime object and pass a datetime to the start_date DAG's parameter:
+</p>
+
+```python
+from airflow import DAG
+
+from datetime import datetime
+
+with DAG(
+    dag_id="etl_pipeline",
+    start_date=datetime(2023,1,1)
+) as dag:
+
+    extract = Operator(
+        task_id='extract'
+    )
+
+
+```
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;By default, all dates in Airflow is stored in UTC, which is recommended since it can avoid timezones problems. So, it's up to us to manage the timing in order to start scheduling our DAGs in the desired datetime.
+</p>
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;There still are two important things to to keep in mind. First, by default, if we specify a start date in the past, Airflow will trigger all runs between that date and the current date. In order to deal with this behavior, we have to specify some parameters (we'll see them in the next section).
+<br>
+
+&ensp;&ensp;&ensp;&ensp;Secondly, it is recommended to set a fixed start date time intead of a dinamically one (it is not a good idea to use datetime.now()). That's because, as we saw before, the DAG is triggered only when the start_date + scheduling_interval has elapsed. It turns out that if we use datetime.now(), the start_date constantly changes and, then, the time to trigger the DAG never comes. SO, we end up with a DAG that never get triggered.
 </p>
 
 ---
