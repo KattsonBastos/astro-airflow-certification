@@ -210,6 +210,10 @@ with DAG(
 &ensp;&ensp;&ensp;&ensp;But what's the difference between cron and timedelta? Well, cron expressions are absolute. That means if we specify that we want to run our dag at 10 AM, it will be triggered at 10 AM. The timedelta is relative: if we specify we want to run our DAG with a timedelta(hours=10), it will be triggered every 10 hours starting from the previsous execution date.
 </p>
 
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;The last thing to keep in mind about the Airflow Scheduling Interval is the ability to pass a None value to the parameters. By doing so, our DAG will never be automatically triggered by the Scheduler, it will be triggered or manually or by an external application.
+</p>
+
 
 ---
 <p id="bf"></p>
