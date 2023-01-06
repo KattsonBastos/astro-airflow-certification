@@ -1,5 +1,7 @@
 # Playing with DAGs and Tasks: code details
 
+[back to fundamentals page](https://github.com/KattsonBastos/astro-airflow-certification/tree/main/fundamentals)
+
 <p align="justify">
 &ensp;&ensp;&ensp;&ensp;In this section we're going to take a little look at some DAG Python code, addressing some scheduling and dates concepts, operators, and data exchange between tasks.
 </p>
