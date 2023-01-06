@@ -64,7 +64,7 @@ with DAG(
 
 ```
 
-<p id="default"></p>
+<p id="prod"></p>
 
 ## Executors in Production
 
