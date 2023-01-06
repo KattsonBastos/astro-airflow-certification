@@ -375,7 +375,6 @@ with DAG(
     schedule_interval=timedelta(days=1),
     catchup=False,
     default_args=default_args
-
 ) as dag:
 
     extract = PythonOperator(
@@ -435,7 +434,6 @@ from datetime import datetime
 
 with DAG(
     ...
-
 ) as dag:
 
     waiting_for_data = FileSensor(
@@ -475,14 +473,12 @@ from datetime import datetime
 
 with DAG(
     ...
-
 ) as dag:
 
     hello_astro = BashOperator(
         task_id='hello_astro',
         bash_command='echo hello, astro!'
     )
-
 ```
 
 ---
@@ -492,7 +488,136 @@ with DAG(
 
 [back to contents](#contents)
 
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;Until now we saw how to create and configure DAGs and its tasks, but how to set the dependencies between the tasks? There are two ways of defining those dependencies. But before we take a look at it, let's consider the following example code (I jsut removed some parameters in order to make it cleaner. Let's focus only on the operators):
+</p>
 
+```python
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+
+from datetime import datetime
+
+
+with DAG(
+    ...
+) as dag:
+
+    extract = PythonOperator(
+        task_id='extract',
+        python_callable='_data_extraction'
+    )
+
+    transform = PythonOperator(
+        task_id='transform',
+        python_callable='_data_transformation'
+    )
+
+    load = PythonOperator(
+        task_id='load',
+        python_callable='_data_load'
+    )
+
+```
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;Let's imagine our DAG have those three tasks. I believe you agree that we should first perform the data extraction, then the data transformation and, finally, the data loading into a DW. TO do it, we need a way to inform Airflow the data extraction is a dependency of the data transform, and this last is a deependency of the data loading.
+</p>
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;The first way to do it is by using the one of the following two methods: set_downstream and set_upstream. So, at the end of the code, after creating the tasks, we could just add the following:
+</p>
+
+```python
+    
+with DAG(
+    ...
+) as dag:
+
+    ...
+    
+    extract.set_downstream(transform)
+    transform.set_downstream(load)
+
+```
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;It means that the extract should be executed first before data transformation, and then the transformation.
+</p>
+
+```python
+    
+with DAG(
+    ...
+) as dag:
+
+    ...
+    
+    load.set_upstream(transform)
+    transform.set_upstream(extract)
+
+```
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;It means that the first task to be executed before data loading is the data transformation and, then, befora the data transformation, it must execute the data extraction.
+</p>
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;However, there is a better way to define those dependencies, which is also the most commonly used. Instead of using those methods, we could use Python bitshift operators, which makes it more cleaner and, then, better to understand:
+</p>
+
+```python
+    
+with DAG(
+    ...
+) as dag:
+
+    ...
+    
+    extract >> transform >> load
+
+```
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;When we have a single direction dependency like the above, we can use the chain function, which is the exact equivalent to the bitshift operator:
+</p>
+
+```python
+from airflow.models.baseoperator import chain
+    
+with DAG(
+    ...
+) as dag:
+
+    ...
+    
+    chain(extract, transform, load)
+```
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;Let's imagine a more complex example. Suppose we want to perform the following pipeline:
+</p>
+
+<img src="../images/deps.jpg" alt="drawing" width="100%"/>
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;First, we'll extract data from two different sources. Then, we'll apply some transformations and, then, load the data into two different databases: a Postgres anda MySQL. Finally, we'll send an email with some execution details. A different thing here is that we have tasks with two dependencies: transform will be executed after both data extraction succeeds. A common way to set up those dependencies is by doing:
+</p>
+
+```python
+    
+with DAG(
+    ...
+) as dag:
+
+    ...
+    
+    [extract_source_1, extract_source_2] >> transform >> [load_postgres, load_mysql] >> email_report
+```
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;Those square brackets sets exactly that dependency we mentioned.
+</p>
 
 
 ---
