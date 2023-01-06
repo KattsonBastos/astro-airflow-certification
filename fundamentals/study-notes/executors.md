@@ -82,5 +82,8 @@ with DAG(
 ### Getting things bigger: the CeleryExecutor
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;This Executor is a good choice if we need to scale out the number of Workers. Since Celery is a distributed task queue, we can use it to distribute teasks between the Workers. However, to do this job, we need an additional component: a queue. This is basically a third party tools, such as RabbitMQ or Redis, that creates a queue where our tasks will be pushed by the Executor and pulled by the Workers. 
+&ensp;&ensp;&ensp;&ensp;This Executor is a good choice if we need to scale out the number of Workers. Since Celery is a distributed task queue, we can use it to distribute teasks between the Workers. However, to do this job, we need an additional component: a queue. This is basically a third party tool, such as RabbitMQ or Redis, that creates a queue where our tasks will be pushed by the Executor and pulled by the Workers.
+<br>
+
+&ensp;&ensp;&ensp;&ensp;An important thing to keep in mind is that once we have multiple machines, multiple workers, we'll need to take care of the dependencies: we'll need Airflow installed in all machines, otherwise a machine won't be able to execute a task; dependencies needed by the DAG, such as a python library or an ODBC driver.
 </p>
