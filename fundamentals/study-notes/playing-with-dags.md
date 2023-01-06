@@ -222,6 +222,42 @@ with DAG(
 
 [back to contents](#contents)
 
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;The backfilling process allows us to run/rerun past non-triggered or already triggered DAGs. Airflow by default triggers all non triggered DAG runs. Imagine we specified a start date starting two years ago. By default, Airflow will trigger all runs from that date until now.
+</p>
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;To manage this behavior, we can use the catchup parameter (which is setted to True by default):
+</p>
+
+```python
+from airflow import DAG
+
+from datetime import datetime
+
+with DAG(
+    dag_id="etl_pipeline",
+    start_date=datetime(2023,1,1),
+    schedule_interval=timedelta(days=1),
+    catchup=False
+
+) as dag:
+
+    extract = Operator(
+        task_id='extract'
+    )
+
+```
+
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;Even though in the above example catchup is setted to False, we're also able to backfill our DAG through the CLI by running
+</p>
+
+```bash
+airflow dags backfill -s [start_date] -e [end_date] [dag_id]
+
+```
 
 ---
 <p id="ops"></p>
@@ -229,6 +265,163 @@ with DAG(
 ## Some Important Operators
 
 [back to contents](#contents)
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;In Airflow, an Operator is basically a task. That is, it becomes a task in our pipeline. There are some things to keep in mind about operators. It is not recommended to put two tasks in the same operator. Imagine we have two tasks: load and transform the data. If we put them in the same operator and one of them fail, we'll have to retry both tasks, wasting time and resources. In this way, we could create two operators and manage them separately.
+</p>
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;Another important concept to remember is that our operator must be idepotent: for a given input, is must return the same output whenever we run the task. This is important because most of the times we're retrying the tasks, running past tasks, and so on.
+</p>
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;Additionally, the task_id of an operator must be unique across the DAG.
+</p>
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;Lastly, Airflow brings some parameters we can specify in the operator in order to manage the task retry. The first is the retry parameters. With it, we can specify how many retries we want for a specific task. The second is the retry delay, that allows us to specify the delay between retries:
+</p>
+
+```python
+from airflow import DAG
+
+from datetime import datetime
+
+with DAG(
+    dag_id="etl_pipeline",
+    start_date=datetime(2023,1,1),
+    schedule_interval=timedelta(days=1),
+    catchup=False
+
+) as dag:
+
+    extract = Operator(
+        task_id='extract',
+        retry=3,
+        retry_delay=timedelta(minutes=30)
+    )
+
+```
+
+### Automatic Operator Arguments
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;If we're using the same arguments in many arguments, it is a good option to define a dictionary with the parameters we want to apply to all of them and pass it to the default_args parameter in the DAG:
+</p>
+
+```python
+from airflow import DAG
+
+from datetime import datetime
+
+default_args = {
+    'retry': 3,
+    'retry_delay': timedelta(minutes=30)
+}
+
+
+with DAG(
+    dag_id="etl_pipeline",
+    start_date=datetime(2023,1,1),
+    schedule_interval=timedelta(days=1),
+    catchup=False,
+    default_args=default_args
+
+) as dag:
+
+    extract = Operator(
+        task_id='extract'
+    )
+
+    transform = Operator(
+        task_id='transform'
+    )
+
+```
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;In the above example, all default arguments will be applied to those two operators. However, if we want a specific task to have a different behavior (let's say, a retry=10), all we have to do is to specify it in the operator: specifying in the operator have a priority over the default args.
+</p>
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;In Airflow, we have a lot of operator for a bunch of things. Let's take a little look at three of them.
+</p>
+
+### The Python Operator
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;One of the most commonly used operator in Airflow. It allows us to run python callable functions. The following snippet shows the PythonOperator use:
+</p>
+
+
+```python
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+
+from datetime import datetime
+
+default_args = {
+    'retry': 3,
+    'retry_delay': timedelta(minutes=30)
+}
+
+def _data_extraction():
+    pass
+
+with DAG(
+    dag_id="etl_pipeline",
+    start_date=datetime(2023,1,1),
+    schedule_interval=timedelta(days=1),
+    catchup=False,
+    default_args=default_args
+
+) as dag:
+
+    extract = PythonOperator(
+        task_id='extract',
+        python_callable=_data_extraction
+    )
+
+```
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;We must pass what function we want to run. In example, we created a data extraction function (that doesn't do anything, just to examplify) and we passed it as argument to the python_callable parameter. So, this task is just to eecute that function.
+</p>
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;An extremelly cool thing we can do with PythonOperator is to pass the dag run context to the python callable function. To do so, we can just edit our function to receive arguments or keyword arguments:
+</p>
+
+
+```python
+def _data_extraction(**kwargs):
+    print(kwargs['task_id'])
+    print(kwargs['dag_run'])
+    print(kwargs['ds']) # dag run execution date
+
+```
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;Those args brings into the function information about the task id, the dag name, the dag object, and a lot more things. So, if you know Python, you know we could do a lot of thigns with that information.
+</p>
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;But that's not the only way to pass arguments into a function, we can also pass our own arguments by using the op_kwargs parameter (it receives a dictionary):
+</p>
+
+```python
+extract = PythonOperator(
+    task_id='extract',
+    python_callable=_data_extraction,
+    op_kwargs={'custom_arg': 'astro'}
+)
+
+```
+
+### The Sensor Operator
+
+
+### The Bash Operator
 
 ---
 <p id="excg"></p>
