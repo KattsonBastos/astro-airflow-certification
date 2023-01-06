@@ -12,6 +12,7 @@
 - <a href="#dates">Start Date and Scheduling Interval</a>
 - <a href="#bf">Backfilling</a>
 - <a href="#ops">Some Important Operators</a>
+- <a href="#deps">Defining Dependencies Between Tasks</a>
 - <a href="#excg">Exchanging Data Between Tasks</a>
 
 ---
@@ -418,10 +419,81 @@ extract = PythonOperator(
 
 ```
 
-### The Sensor Operator
+### The File Sensor Operator
+
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;A commonly used case in Airflow is to wait for a file to landing a specific location before moving to the next task. That's what the FileSensor does:
+</p>
+
+```python
+from airflow import DAG
+from airflow.sensors.filesystem import FileSensor
+
+from datetime import datetime
+
+
+with DAG(
+    ...
+
+) as dag:
+
+    waiting_for_data = FileSensor(
+        task_id='waiting_for_data',
+        fs_conn_id='fs_default',
+        file_path='file_name.txt',
+        poke_interval=10
+    )
+
+    transform = Operator(
+        task_id='transform',
+        ...
+    )
+
+```
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;In order to use that sensor, we need to specify a connection id that is needed by the sensor. This connection is created in the UI by going to the Admin -> Connections and add a new connection. We can sensor for files from many source, such is AWS, Azure, local file.
+<br>
+
+&ensp;&ensp;&ensp;&ensp;FInally, we pass the file name we want. By default, the sensor check the folder every 30 seconds. TO change this interval, we just have to pass the value to the poke_interval parameter.
+</p>
 
 
 ### The Bash Operator
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;This is another extremely used operator. The BashOperator allows us to execute bash commands. It is pretty simple to use: we just have to pass the command to the bash_command parameter.
+</p>
+
+```python
+from airflow import DAG
+from airflow.operators.bash import BashOperator
+
+from datetime import datetime
+
+
+with DAG(
+    ...
+
+) as dag:
+
+    hello_astro = BashOperator(
+        task_id='hello_astro',
+        bash_command='echo hello, astro!'
+    )
+
+```
+
+---
+<p id="deps"></p>
+
+## Defining Dependencies Between Tasks
+
+[back to contents](#contents)
+
+
+
 
 ---
 <p id="excg"></p>
