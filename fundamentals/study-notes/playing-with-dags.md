@@ -623,6 +623,84 @@ with DAG(
 ---
 <p id="excg"></p>
 
-## Exchanging Data Between Tasks
+## Exchanging Messages Between Tasks
+
 
 [back to contents](#contents)
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;In Airflow, we can share data between tasks. However, there are some limitations. The way of sharing data between our tasks is defined as XCOMS. XCOM stands for "cross-communication" and is defined as a key, a value, a timestamp, and some other DAG and Task information. However, any object that can be pickle can be used as an XCOM.
+<br>
+
+&ensp;&ensp;&ensp;&ensp;In PythonOperator, if we return a value in our callable function, it is automatically encapsulated into a XCOM and well' be able to pull that XCOM in other tasks. The way of doing it is by the following:
+</p>
+
+```python
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+
+from datetime import datetime
+
+default_args = {
+    'retry': 3,
+    'retry_delay': timedelta(minutes=30)
+}
+
+def _return_astro():
+    
+    return 'astro'
+
+def _get_astro(ti):
+
+    my_xcom = ti.xcom_pull(key="return_value", task_ids=['astro_return'])
+    print(my_xcom)
+
+
+with DAG(
+    dag_id="etl_pipeline",
+    ...
+) as dag:
+
+    astro_return = PythonOperator(
+        task_id='astro_return',
+        python_callable=_return_astro
+    )
+
+    astro_getter = PythonOperator(
+        task_id='astro_getter',
+        python_callable=_get_astro
+    )
+
+```
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;The function _return_astro returns a string that will be automatically encapsulated as a XCOM. The _get_astro function access the task context and pull the created XCOM. Let's better understand that.
+<br>
+
+&ensp;&ensp;&ensp;&ensp;When we create a XCOM, it becomes available in our AIrflow. We can access it by going to Admin -> XCOMS. All created XCOMs are listed there. It'll look like this:
+</p>
+
+<img src="../images/xcoms.png" alt="drawing" width="100%"/>
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;We can notice that there is a key-value pair there (return_value-astro). Once the XCOM is created, the _get_astro can get it. The way of doing is by accessing the task context we saw earlier. There, we used kwargs, but we can also pass as argument specific values, such as the task instance (ti). The task instance is an object that has some methods. One of the methods is the ability to pull xcoms values. In the callable function, we pull the XCOM by accessing the return_value of the astro_return task. The print function will output a list containing 'astro, which is the we return in the first function.
+<br>
+
+&ensp;&ensp;&ensp;&ensp;Instead of returning a value, we can also use the ask instance in the function and push the value:
+</p>
+
+```python
+def _return_astro(ti):
+    
+    ti.xcom_push(key='astro_key', value='astro')
+```
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;If you noticed, this way allows us to pass a custom key to our XCOM. Now, even though the value is the same, the key has changed:
+</p>
+
+<img src="../images/xcom_push.png" alt="drawing" width="100%"/>
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;Before we finish this section, there still is someting important to keep in mind. THe XCOM is stored into the Airflow database. So, it is limited in size and this size will depend on the database we're using. In this way, we have to be careful with the size of the data we share between tasks: it is not recommended to share petabytes of data. XCOMs is mostly use to share states, metadata, and and so on.
+</p>
