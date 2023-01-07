@@ -26,7 +26,7 @@
 [back to contents](#contents)
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;To answer that questions, let's image we are working on an ETL pipeline, extracting data from an API, transforming them with Dbt, and, finally, loading them into a database. What would happen if the request to the API falied? Or if the database goes down? If we have just a few pipelines to manage, it becomes simple to manage those exception. Even so, having a easier way to rerun our pipeline would be very helpful.
+&ensp;&ensp;&ensp;&ensp;To answer that questions, let's image we are working on an ETL pipeline, extracting data from an API, transforming them with Dbt, and, finally, loading them into a database. What would happen if the request to the API fails? Or if the database goes down? If we have just a few pipelines to manage, it becomes simple to deal with those exceptions. Even so, having an easier way to rerun our pipeline would be very helpful.
 </p>
 
 <p align="justify">
@@ -107,7 +107,7 @@
 </p>
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;The next one, the <strong>Metadata Database</strong>, is a component that stores all data related to users, jobs, varaibles, and connections (among many other). But what databases could we use as Airflow metadata storage? We could use any one that is compatible with Sqlalchemy, such as Postgres and MySql.
+&ensp;&ensp;&ensp;&ensp;The next one, the <strong>Metadata Database</strong>, is a component that stores all data related to users, jobs, variables, and connections (among many other). But what databases could we use as Airflow metadata storage? We could use any one that is compatible with Sqlalchemy, such as Postgres and MySql.
 </p>
 
 <p align="justify">
