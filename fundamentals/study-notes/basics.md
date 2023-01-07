@@ -107,11 +107,11 @@
 </p>
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;The next one, the <strong>Metadata Database</strong>, is a component that stores all data related to users, jobs, variables, and connections (among many other). But what databases could we use as Airflow metadata storage? We could use any one that is compatible with Sqlalchemy, such as Postgres and MySql.
+&ensp;&ensp;&ensp;&ensp;The next one, the <strong>Metadata Database</strong>, is a component that stores all data related to users, jobs, variables, and connections (among many others). But what databases could we use as Airflow metadata storage? We could use any one that is compatible with Sqlalchemy, such as Postgres and MySql.
 </p>
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;In order to define how our tasks are going be executed, Airflow has a <strong>Executor</strong> component. So, we have specific executors for running tasks on local machines or on a Kubernetes Cluster.
+&ensp;&ensp;&ensp;&ensp;In order to define how our tasks are going be executed, Airflow has an <strong>Executor</strong> component. So, we have specific executors for running tasks on local machines or on a Kubernetes Cluster.
 </p>
 
 <p align="justify">
@@ -127,7 +127,7 @@
 [back to contents](#contents)
   
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;There are thounsands of architectures we could use in Airflow, but let's start simple by taking a look at two types: one node and multi node archutectures.
+&ensp;&ensp;&ensp;&ensp;There are thounsands of architectures we could use in Airflow, but let's start simple by taking a look at two types: one node and multi node architectures.
 </p>
 
 ### Single Node: the simplest architecture we can have
@@ -192,7 +192,7 @@
 <img src="../images/simple-dag.jpg" alt="drawing" width="100%"/>
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;In Airflow, when we create a data pipeline, we are actually creating a DAG. A DAG is simply a collection of all tasks (the workflow) defined as a graph. The dependency between the tasks must be acyclic, not cyclic (it is not possible ot have loops in our DAGs). In the image above, for example, the data transformation is only executed when both data extraction are done.
+&ensp;&ensp;&ensp;&ensp;In Airflow, when we create a data pipeline, we are actually creating a DAG. A DAG is simply a collection of all tasks (the workflow) defined as a graph. The dependency between the tasks must be acyclic, not cyclic (it is not possible ot have loops in our DAGs). In the image above, for example, the data transformation is only executed when both data extractions are done.
 </p>
 
 <p align="justify">
@@ -200,15 +200,11 @@
 The idea of a DAG is to wrap up all of our tasks, the relationship between them, and their depencencies.
 </p>
 
-<p align="justify">
-&ensp;&ensp;&ensp;&ensp;
-The idea of a DAG is to wrap up all of our tasks, the relationship between them, and their depencencies.
-</p>
 
 ### Operators
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;An Operator is a task in our DAG: whenever we define a operator, we are creating a task in our DAG. In this way, they define what is going to be executed: a bash command, a python function, a SQL query, among many others. For each task we want to run in our pipeline, we instantiate an Operator.
+&ensp;&ensp;&ensp;&ensp;An Operator is a task in our DAG: whenever we define a operator, we are creating a task. In this way, they define what is going to be executed: a bash command, a python function, a SQL query, among many others. For each task we want to run in our pipeline, we instantiate an Operator.
 </p>
 
 <p align="justify">
@@ -217,7 +213,7 @@ The idea of a DAG is to wrap up all of our tasks, the relationship between them,
 
 - Action Operators: allows us to execute something, such as a python script, a bash command, or a SQL query.
 - Transfer Operator: allows us to transfer data from a source to a destination.
-- Sensor Operator: usefull when we want to wait for something to happen before moving to the next task. For example, if we want to wait for a file to be loaded in to a S3 storage to, then, download that file with a task, we could use a File Sensor Operator for that.
+- Sensor Operator: usefull when we want to wait for something to happen before moving to the next task. For example, if we want to wait for a file to be loaded in to a S3 storage to, then, download that file with a task, we could use a File Sensor Operator.
 
 ### Tasks
 
@@ -250,9 +246,9 @@ The idea of a DAG is to wrap up all of our tasks, the relationship between them,
 </p>
 
 1. We start by creating a data pipeline in a file (we call it dag.py) and then adding it to a folder where we store all of our DAGs.
-2. Once the is created in the folder, it will be parsed by both the Web Server and the Scheduler. By default, the Web Server searches for DAGs in the folder for every 30 seconds, while the Scheduler searches for every five minutes.
-3. Once the DAG is parsed by both components, The Scheduler checks if the DAG is ready to be triggered and, if so, it creates a DagRun Object (an instance of our DAG) into the Metastore. However, since the DAG hasn't run yet, there's no info status. 
-4. In this case, with the task ready to be triggered, it is created a TaskInstance object with the state **"scheduled"**. Then, the Scheduler sends the task tot he Executor and, now, its status becomes **"queued"**. Once the task is queued, the Executor takes that task and execute it into a worker, changing it status to **"running"**.
+2. Once the file is created, it will be parsed by both the Web Server and the Scheduler. By default, the Web Server searches for DAGs in the folder for every 30 seconds, while the Scheduler searches for every five minutes.
+3. Once the DAG is parsed by both components, The Scheduler checks if the DAG is ready to be triggered and, if so, it creates a Dag Run Object (an instance of our DAG) into the Metastore. However, since the DAG hasn't run yet, there's no info status. 
+4. In this case, with the task ready to be triggered, it is created a Task Instance object with the state **"scheduled"**. Then, the Scheduler sends the task to the Executor and, now, its status becomes **"queued"**. Once the task is queued, the Executor takes that task and execute it into a worker, changing it status to **"running"**.
 5. Once the task is finished, the Executor updates it status to **"success"** in the Metastore if no failures has occurred.
 6. In the end, the Web Server updates the UI.
 
@@ -266,19 +262,19 @@ The idea of a DAG is to wrap up all of our tasks, the relationship between them,
 
   
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;Airflow's installation brings us only what we need to get started building our DAGs. For example, we we need to send an email after a task has finished, Airflow already brings that as a core functionality. However, most of the times, we need some additional functionalities, regarding both to Airflow's settings and to our DAG execution. That's where **Extras** and **Provicers** come in.
+&ensp;&ensp;&ensp;&ensp;Airflow's installation brings us only what we need to get started building our DAGs. For example, if we need to send an email after a task has finished, Airflow already brings that as a core functionality. However, most of the times, we need some additional functionalities, regarding both to Airflow's settings and to our DAG execution. That's where **Extras** and **Provicers** come in.
 </p>
 
 ### Extras
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;Extras are like a big package that install all dependencies needed by the functionality we want. Once we install an Extra, the Airflow's Core is extended (the new Extra functionality becomes part of the Airflow's Core we have installed). For example, we could need a password authentication for users. In this case, we would need to install a password Extra. According to <a href="https://airflow.apache.org/docs/apache-airflow/stable/extra-packages-ref.html">the documentation</a>, Extras don't usually install Providers, except by the "celery" and "cncf.kubernetes" extras, where in this is case they install some necessary python dependencies for the respective provided package.
+&ensp;&ensp;&ensp;&ensp;Extras are like a big package that install all dependencies needed by the functionality we want. Once we install an Extra, the Airflow's Core is extended (the new Extra functionality becomes part of the Airflow's Core we have installed). For example, we could need a password authentication for users. In this case, we would need to install a password Extra. According to <a href="https://airflow.apache.org/docs/apache-airflow/stable/extra-packages-ref.html">the documentation</a>, Extras don't usually install Providers, except by the "celery" and "cncf.kubernetes" extras, where in this is case they install some necessary Python dependencies for the respective provided package.
 </p>
 
 ### Providers
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;Providers add functionalities on top of Airflow, but they is entirely separated fro mteh Airflow Core. That means a Provider can be updated without waiting for a update in Airflow. For example, if our pipeline needs to connect to a Postgres database, it won't find the connection by default along with Airflow. So, in this case, we would need to install the Postgres Provider.
+&ensp;&ensp;&ensp;&ensp;Providers add functionalities on top of Airflow, but they is entirely separated from hhe Airflow Core. That means a Provider can be updated without having to wait for an update in Airflow. For example, if our pipeline needs to connect to a Postgres database, it won't find the connection by default along with Airflow. So, in this case, we would need to install the Postgres Provider.
 </p>
   
 ---
