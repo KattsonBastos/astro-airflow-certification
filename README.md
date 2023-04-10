@@ -8,4 +8,4 @@ This repository contains my personal study notes and practices related to my pre
 
 ## Contents
 - [Apache Airflow Fundamentals Certification](/fundamentals)
-- Apache Airflow DAG Authoring Certification
+- [Apache Airflow DAG Authoring Certification](/dag_authoring)
