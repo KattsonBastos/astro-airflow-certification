@@ -11,6 +11,7 @@
 ## Contents
 - <a href="#key">Key Notes about DAG files</a>
 - <a href="#way">The Right Way of Defining DAGs</a>
+- <a href="#scheduling">DAG Scheduling 101</a>
 
 ---
 <p id="key"></p>
@@ -39,7 +40,7 @@
 
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;There are a lot of ways we can define our dag. The first way is by using the python's context manager `with` as follows:
+&ensp;&ensp;&ensp;&ensp;There are a lot of ways we can define our DAG. The first way is by using the python's context manager `with` as follows:
 </p>
 
 ```python
@@ -66,7 +67,7 @@ DummyOperator(dag=dag)
 </p>
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;The third way we can define a DAG is by using the dag decorator from TaskFlow. It is a new dag writing paradigm introduced in Airflow 2.0 and and we'll better discuss it later.
+&ensp;&ensp;&ensp;&ensp;The third way we can define a DAG is by using the dag decorator from TaskFlow. It is a new DAG writing paradigm introduced in Airflow 2.0 and and we'll better discuss it later.
 </p>
 
 ```python
@@ -78,19 +79,19 @@ def user_to_gcs():
 ```
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;Whatever method we choose, there're some parameters we need to specify when defining a dag:
+&ensp;&ensp;&ensp;&ensp;Whatever method we choose, there're some parameters we need to specify when defining a DAG:
 </p>
 
-- **dag_id**: unique idetifier of our dag (across all of our dag in the Airflow instance). If we have two dags defined with the same id, no errors will be displayed. However, the UI will display one of the two dags randomly (without checking the code or the diagram, we won't know which dag it is displaying)
-- **description**: a parameter we can use to explain what's the goal of the dag. Even though it is not required, it is a best practice to pass an argument to it.
-- **start_date**: it is an option argument used by the scheduler when trying to backfill. Even though it is optional, Airflow needs a start date be in the dag definition, be in the task. Otherwise we'll have errors. When passing a start date to the dag, it'll be applied to all of its tasks.
-- **schedule_interval** (deprecated since version 2.4) and **schedule**: basically, to defined the trigger frequency of our dag. As an argument, we can pass both a cron string, a timedelta object, a timtable.
+- **dag_id**: unique idetifier of our DAG (across all of our DAG in the Airflow instance). If we have two DAGs defined with the same id, no errors will be displayed. However, the UI will display one of the two DAGs randomly (without checking the code or the diagram, we won't know which DAG it is displaying)
+- **description**: a parameter we can use to explain what's the goal of the DAG. Even though it is not required, it is a best practice to pass an argument to it.
+- **start_date**: it is an option argument used by the scheduler when trying to backfill. Even though it is optional, Airflow needs a start date be in the DAG definition, be in the task. Otherwise we'll have errors. When passing a start date to the DAG, it'll be applied to all of its tasks.
+- **schedule_interval** (deprecated since version 2.4) or **schedule**: basically, to defined the trigger frequency of our DAG. As an argument, we can pass both a cron string, a timedelta object, a timtable.
 - **dagrun_timeout**: to failed the DagRun if it takes more than the passed time to complete. There's no default value for this parameters.
-- **tags**: a pretty useful argument we can use to set tags to a dag in order to facilitate dag search & filtering in the UI. It is important to pass meaningful tags related to the business the dag is related and the operation it does.
-- **catchup**: to automatically catchup passed non triggered DagRuns. Let's suppose we stopped the dag for two days. Once we start it again, if `catchup` is setted to True, all non triggered runs of those two days will be triggered.
+- **tags**: a pretty useful argument we can use to set tags to a DAG in order to facilitate DAG search & filtering in the UI. It is important to pass meaningful tags related to the business the DAG is related and the operation it does.
+- **catchup**: to automatically catchup passed non triggered DagRuns. Let's suppose we stopped the DAG for two days. Once we start it again, if `catchup` is setted to True, all non triggered runs of those two days will be triggered.
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;It follows bellow an example of a dag definition with the above parameters:
+&ensp;&ensp;&ensp;&ensp;It follows bellow an example of a DAG definition with the above parameters:
 </p>
 
 ```python
@@ -109,3 +110,34 @@ with DAG(
 ) as dag:
     DummyOperator()
 ```
+
+---
+<p id="scheduling"></p>
+  
+## DAG Scheduling 101
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;In order to properly schedule our DAGs we have to appropriate deal with two important parameters in the DAG definition:
+</p>
+
+- **start_date** (python's datetime object): the date at which our DAG starts being scheduled. In other words, it is the date we want to start scheduling the DAG.
+- **schedule** or **scheduling_interval** (deprecated since version 2.4): the interval from the start_date at which the DAG is triggered. We can used both a cron expression or a datetime's timedelta object.
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;It is important to keep the following sentence in mind: The DAG [X] starts being scheduled from the start_date and will be triggered <strong>after every schedule_interval</strong>. In order to summarize, let's keep it in the following:
+</p>
+
+```
+triggered_date = start_date + schedule_interval
+```
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;Before we finish this section, let's consider an example. Suppose we have a DAG with a start_date at 10:00 AM and a schedule interval every 10 minutes. Here is a little confusion part of Airflow. Once the DAG is triggered at 10:10 AM (as we saw, start_date + schedule_interval, which is 10:00 AM + 10 minutes), the 10:00 becomes the <strong>execution_date</strong> of the running DagRun. Once the DagRun finishes its execution, the 10:10 AM becomes the start_date of the next DagRun and nothing happens until 10:20, when the second DagRun is effectively triggered. For this DagRun, 10:10 AM becomes it execution date and then, once it finishes, 10:20 AM becomes the start_date of the third DagRun, and so on.
+</p>
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;The following image ilutrates that start_date/schedule_interval dynamics:
+</p>
+
+
+<img src="../images/scheduling.png" alt="drawing" width="100%"/>
