@@ -14,6 +14,7 @@
 - <a href="#scheduling">DAG Scheduling 101</a>
 - <a href="#crons">Cron vs Timedelta</a>
 - <a href="#idempotence">Task Idempotence and Determinism</a>
+- <a href="#backfill">Backfilling</a>
 
 ---
 <p id="key"></p>
@@ -170,10 +171,72 @@ triggered_date = start_date + schedule_interval
 </p>
 
 ---
-<p id="crons"></p>
+<p id="idempotence"></p>
   
 ## Task Idempotence and Determinism
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;
+&ensp;&ensp;&ensp;&ensp;There are two other important concepts to keep in mind when defining DAGs. Let's brief see what they mean.
+</p>
+
+- Determinism: means that if we execute a task with the same input, we should always get back always the same output.
+
+- Idempotent: if we execute our task multiple times, it should produce the same side effect.
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;An example of a non idempotent task is a creation of a table such like the following:
+</p>
+
+```python
+    PostgresOperator(
+    task_id="create_table",",
+    sql="CREATE TABLE customers..")
+```
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;When execution that task twice, we should get an error, because in the second run the table already exists in the database. The appropriate way of doing that would be adding a ```IF NOT EXISTS``` clause in the query.
+</p>
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;The same happens when using the BashOperator to create folders. If the folder already exists, we have to make sure the task won't fail because of that. So, we would have to replace this
+</p>
+
+```bash
+    mkdir user_folder
+```
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;with this:
+</p>
+
+```bash
+    mkdir -p user_folder
+```
+
+---
+<p id="backfill"></p>
+  
+## Backfilling
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;In order to finish this `basics` section, let's brief consider the backfilling tool of Airflow. As we saw, this is a parameters (catchup) we can specify when defining a DAG and we must be careful with it whether we want or not to backfill our executions.
+</p>
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;The default value of this parameter is `True`, that means by default all previous (from the start_date) non triggered DagRuns will be executed.
+</p>
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;As a best practice we usually keep that parameter as False in order to avoid a lot of DagRuns being triggered. Also, even we setted it to False, we still can backfill our DAGs with the following command:
+</p>
+
+```bash
+airflow dags backfill -s <start_date> -e <execution_date> <dag_name>
+
+# such as
+airflow dags backfill -s 2023-01-01 -e 2023-01-01 user_s3_gcs
+```
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;At last, we can also specify the `max_active_runs=1` in the DAG definition in order to allow only one DagRun per time for the DAG, avoiding too many executions at the same time, specially when we have dependencies between the DagRuns.
 </p>
