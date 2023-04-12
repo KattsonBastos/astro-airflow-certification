@@ -12,6 +12,8 @@
 - <a href="#key">Key Notes about DAG files</a>
 - <a href="#way">The Right Way of Defining DAGs</a>
 - <a href="#scheduling">DAG Scheduling 101</a>
+- <a href="#crons">Cron vs Timedelta</a>
+- <a href="#idempotence">Task Idempotence and Determinism</a>
 
 ---
 <p id="key"></p>
@@ -141,3 +143,37 @@ triggered_date = start_date + schedule_interval
 
 
 <img src="../images/scheduling.png" alt="drawing" width="100%"/>
+
+---
+<p id="crons"></p>
+  
+## Cron vs Timedelta
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;There are two ways of defining our schedule interval parameter (or jsut schedule, for Airflow's version >= 2.4). They are:
+</p>
+
+- Cron Expressions (stateless, absolute): an example is the '@daily", whih means "0 0 * * * ", that is, The DAG is going to be triggered at midnight of each day. For example, if the start_date if the first of january 2023, then the DagRun #1 is going to be triggered as the following (let's assume that now is 10 AM of 2023/01/01):<br><br>
+  -> 2023/01/02 00:00 <br>
+  -> 2023/01/03 00:00 <br>
+  -> so on..
+
+- Timedelta object (stateful, related to the last execution_date): in this case, the trigger date and time is different. Let's assume that now is 10 AM if 2023/01/01 and we schedule a DAG using the timedelta object, such as ```schedule_interval=timedelta(days=1)```. When do you think will our DAG be triggered? Let's see:<br><br>
+  -> 2023/01/02 10:00 AM<br>
+  -> 2023/01/03 10:00 AM<br>
+  -> so on..
+
+  Did you noticed the difference? the exactly time is 24 hours from now.
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;So, when to use one or another? That trully depends on our use case. Here, we considered only a one-day ahead interval. But a use case for the timedelta object could a need to trigger our DAG every three days. If we do it with cron expressions, we would have to specify all the days we want to run the DAG and also to deal with the 30/31 days of each month. That is, using timedelta is simpler.
+</p>
+
+---
+<p id="crons"></p>
+  
+## Task Idempotence and Determinism
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;
+</p>
