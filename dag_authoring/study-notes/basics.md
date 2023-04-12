@@ -6,6 +6,8 @@
 &ensp;&ensp;&ensp;&ensp;In this section we'll learn how to define DAGs, their schedule interval and backfilling.
 </p>
 
+<a name="readme-top"></a>
+
 <p id="contents"></p>
 
 ## Contents
@@ -33,6 +35,8 @@
 <p align="justify">
 &ensp;&ensp;&ensp;&ensp;Another important thing to keep in mind is if we have other Python files or other folders in the DAGs folder, we can add a '.airflowignore' in order to avoid Scheduler from trying to parse them. In that file, we can pass any file, folder or extension we don't want to parse.
 </p>
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ---
 <p id="way"></p>
@@ -114,6 +118,8 @@ with DAG(
     DummyOperator()
 ```
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ---
 <p id="scheduling"></p>
   
@@ -145,6 +151,8 @@ triggered_date = start_date + schedule_interval
 
 <img src="../images/scheduling.png" alt="drawing" width="100%"/>
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ---
 <p id="crons"></p>
   
@@ -169,6 +177,8 @@ triggered_date = start_date + schedule_interval
 <p align="justify">
 &ensp;&ensp;&ensp;&ensp;So, when to use one or another? That trully depends on our use case. Here, we considered only a one-day ahead interval. But a use case for the timedelta object could a need to trigger our DAG every three days. If we do it with cron expressions, we would have to specify all the days we want to run the DAG and also to deal with the 30/31 days of each month. That is, using timedelta is simpler.
 </p>
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ---
 <p id="idempotence"></p>
@@ -213,6 +223,8 @@ triggered_date = start_date + schedule_interval
     mkdir -p user_folder
 ```
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ---
 <p id="backfill"></p>
   
@@ -240,3 +252,5 @@ airflow dags backfill -s 2023-01-01 -e 2023-01-01 user_s3_gcs
 <p align="justify">
 &ensp;&ensp;&ensp;&ensp;At last, we can also specify the `max_active_runs=1` in the DAG definition in order to allow only one DagRun per time for the DAG, avoiding too many executions at the same time, specially when we have dependencies between the DagRuns.
 </p>
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
