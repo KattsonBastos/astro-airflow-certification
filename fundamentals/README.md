@@ -1,5 +1,8 @@
 # Airflow Fundamentals - Astronomer Certification (Study Notes and Practices)
 
+<p align="center">
+  <img src="./images/badge_fundamentals.png" >
+</p>
 
 
 ## Contents
