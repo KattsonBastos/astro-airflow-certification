@@ -1,0 +1,5 @@
+{
+    "dag_id": "GOOGL",
+    "schedule_interval": "@daily",
+    "input": "3243"
+}
