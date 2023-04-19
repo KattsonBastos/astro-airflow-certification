@@ -126,9 +126,44 @@ def test_variable():
   
 ## Environment Variables
 
-[back to contents](#contents)
-
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;
+&ensp;&ensp;&ensp;&ensp;You could ask another queston: what if wanted to hide the variable from all users in Airflow, what should we do? Well, Airflow allows us to use environment variables. To use them is pretty simple, we just have to add the variable to the dockerfile or docker composer files. So, if you're using Docker, just add the following line to the dockefile:
 </p>
+
+```docker
+ENV AIRFLOW_VAR_STAGING_BUCKET_PATH=gs://some_bucket_path
+```
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;Once added, just restart your Airflow instance. You'll notice that the variable is not displayed in the UI Variables sections, but it still can be feched in a DAG. To fetch it, we just have to keep doing the same as before, such as using the template engine:
+</p>
+
+```python
+ env_variable = "{{ var.json.taxi_info }}"
+ ```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+<p id="wrap"></p>
+  
+## Wrap Up
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;Airflow really brings us a lot of options for handling variables. The best choice depends on each use case. Just for refreshing, there are six different ways we can create variables in Airflow:
+</p>
+
+- UI
+- CLI
+- Rest API
+- Environment Variables
+- Secret Backend
+- Programatically
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;Since ther are many options, it is important to keep in mind the order in which those variables are going to be checked by Airflow. There it is:
+</p>
+
+1. Secret Backends
+2. Environment Variables
+3. Database
