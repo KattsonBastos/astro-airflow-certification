@@ -94,6 +94,71 @@ def fetch_taxi_data(...):
   
 ## The Traditional XCOM Way
 
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;XCOMs allows us to share data between tasks, such as a file path of an object and they're saved in the metadatabase by default. Even though they really come in handy, XCOMs have some limitations. There are a lot of ways to share XCOMs between tasks, let's see some examples.
+<br>
+&ensp;&ensp;&ensp;&ensp;The first way is by using the DagRun task_instance variable, as shows the following snippet:
+</p>
+
+
+```python
+def task_one(ti):
+    ti.xcom_push(key="bucket_path", value="gs://taxi_staging_bucket")
+
+
+def task_two():
+    bucket_name = ti.xcom_pull(key="bucket_path", task_id="task_one")
+
+```
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;The task_one receives the task_instance as an argument and it allows us to pull and push xcom messages. By using the 'xcom_push', the key-pair is pushed. Then, the second task is able to pull that message. The only two parameters we have to pass to get the result is the message key and the task_id that pushed it.
+</p>
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;Now we could wonder: ooh, that's pretty amazing. Can I share my pandas dataframe with this? It is not recommended, specially if our dataframe is too big. XCOMs are limited in sizes, and this limitation depends on the metadatabase. So, for a given XCOM, the limits are:
+</p>
+
+- **SQLite**: 2GB
+- **Postgres**: 1GB
+- **MySQL**: 64KB
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;There's a cleaner way of pushing XCOMs: just return the value. The difference is that by doing this way it creates a XCOMs with a default key name: return_value. A good thing is that in this case it is optional to use or not the key, as show the following task two and three (both work):
+</p>
+
+```python
+def task_one(ti):
+    return "taxi_staging_bucket"
+
+
+def task_two():
+    bucket_name = ti.xcom_pull(key="return_value", task_id="task_one")
+
+
+def task_two():
+    bucket_name = ti.xcom_pull(task_id="task_one")
+
+
+```
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;What if we want to return multiple values? It's pretty simple, we just have to return a dictionary instead of pushing XCOMs twice. When pulled, we'll get a dictionary:
+</p>
+
+
+```python
+def task_one(ti):
+    return {"bucket_path":"taxi_staging_bucket", "taxi_cab":"green"}
+
+
+def task_two():
+    bucket_settings = ti.xcom_pull(task_id="task_one")
+
+
+```
+
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ---
