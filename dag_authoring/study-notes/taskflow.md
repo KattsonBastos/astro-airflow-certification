@@ -15,6 +15,7 @@
 - <a href="#templating">Adding data at runtime with templating</a>
 - <a href="#tr_xcoms">The Traditional XCOM Way</a>
 - <a href="#tf_xcoms">The Taskflow API XCOM Way</a>
+- <a href="#decorators">Decorators: the new way of creating DAGs</a>
 
 ---
 <p id="intro"></p>
@@ -165,3 +166,99 @@ def task_two():
 <p id="tf_xcom"></p>
   
 ## The Taskflow API XCOM Way
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;What if we want to return multiple values? It's pretty simple, we just have to return a dictionary instead of pushing XCOMs twice. When pulled, we'll get a dictionary:
+</p>
+
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+---
+<p id="decorators"></p>
+
+## Decorators: the new way of creating DAGs
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;With the new Taskflow API decorators, we have a new way of creating DAGs, tasks, and groups of tasks. In this section we'll take a look at how to create DAG and tasks using the decorators and what is its difference from the traditional way.
+<br>
+&ensp;&ensp;&ensp;&ensp;Let's consider the following DAG example:
+</p>
+
+
+```python
+# imports
+[...]  # collapsed for simplicity
+
+# python tasks definition
+def _task_one():
+    print('Hey')
+
+
+# dag definition
+with DAG(...) as dag:
+    first_task = PythonOperator(
+        task_id='first_task',
+        python_callable=_task_one
+    )
+
+    first_task
+
+```
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;In order to start using the Taskflow decorators, we need first to import it. Then, let's create a second task and decorate it:
+</p>
+
+```python
+# imports
+from airflow.operators import task
+[...]  # collapsed for simplicity
+
+# python tasks definition
+@task.python
+def task_one():
+    print('Hey')
+
+
+# dag definition
+with DAG(...) as dag:
+
+    first_task()
+
+```
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;As simple as that. To update the code to use the DAG operator is also simple. As you'll see, we also have to call the dag function at the end:
+</p>
+
+```python
+# imports
+from airflow.operators import task
+[...]  # collapsed for simplicity
+
+# python tasks definition
+@task.python
+def task_one():
+    print('Hey')
+
+
+# dag definition
+@dag(...)
+def my_dag():
+
+    first_task()
+
+dag = my_dag()
+
+```
+
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;In this case, without any other parameter in the task decorator, the function, the name of the function become the task name.
+</p>
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
