@@ -14,8 +14,8 @@
 - <a href="#intro">Introduction</a>
 - <a href="#templating">Adding data at runtime with templating</a>
 - <a href="#tr_xcoms">The Traditional XCOM Way</a>
-- <a href="#tf_xcoms">The Taskflow API XCOM Way</a>
 - <a href="#decorators">Decorators: the new way of creating DAGs</a>
+- <a href="#tf_xcoms">The Taskflow API XCOM Way</a>
 
 ---
 <p id="intro"></p>
@@ -162,18 +162,6 @@ def task_two():
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
----
-<p id="tf_xcom"></p>
-  
-## The Taskflow API XCOM Way
-
-<p align="justify">
-&ensp;&ensp;&ensp;&ensp;What if we want to return multiple values? It's pretty simple, we just have to return a dictionary instead of pushing XCOMs twice. When pulled, we'll get a dictionary:
-</p>
-
-
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 ---
@@ -260,5 +248,130 @@ dag = my_dag()
 &ensp;&ensp;&ensp;&ensp;In this case, without any other parameter in the task decorator, the function, the name of the function become the task name.
 </p>
 
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+---
+<p id="tf_xcom"></p>
+  
+## The Taskflow API XCOM Way
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;Once we have the new way of creating tasks with the decorator, the way we can create XCOMs also changed. Instead of pushing and pulling XCOMs, Taskflow API makes it easier: 
+</p>
+
+```python
+# imports
+from airflow.operators import task
+[...]  # collapsed for simplicity
+
+
+@task.python
+def task_one():
+    
+    file_name = "green_taxi_data.csv"
+
+    return file_name
+
+
+@task.python
+def task_two(file_name):
+    
+    print(file_name)
+
+
+# dag definition
+@dag(...)
+def my_dag():
+
+    task_two(task_one())
+
+dag = my_dag()
+
+```
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;Did you notice the difference? Now, we can still kep return the value we want, but, to pull it in the next task, there no need to use the xcom_pull, we can just receive as a parameters and pass the first task as an argument to the second. By doing this way, the XCOM is automatically pushed and pulled and also the dependencies between the two tasks is automatically created.
+<br>
+&ensp;&ensp;&ensp;&ensp;What if we have multiple messages to share between the tasks? In the traditoinal way, we return a dicionary with multiple key-value pairs, but they are stored as a single message. What if we need to return two values as two different XCOMs, in the same task?
+</p>
+
+```python
+# imports
+from airflow.operators import task
+[...]  # collapsed for simplicity
+
+
+@task.python(task_id="get_bucket_file_names", multiple_outputs=True)
+def task_one():
+    
+    green_file_path = "green_taxi_data.csv"
+    yellow_file_path = "yellow_taxi_data.csv"
+
+    return {"yellow_taxi_path": green_file_path, "green_taxi_path": yellow_file_path}
+
+
+@task.python
+def task_two(yellow_path, green_path):
+    
+    print(yellow_path, green_path)
+
+
+# dag definition
+@dag(...)
+def my_dag():
+
+    taxi_file_path = task_one()
+
+    task_two(taxi_file_path['yellow_taxi_path'], taxi_file_path['green_taxi_path'])
+
+dag = my_dag()
+
+```
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;This automatically creates two XCOMs, one called yellow_taxi_path and another called green_taxi_path. However, there is another way of doing the same, just by specifying the output of the functoin:
+</p>
+
+```python
+# imports
+from airflow.operators import task
+from tipyng import Dict
+[...]  # collapsed for simplicity
+
+
+@task.python(task_id="get_bucket_file_names")
+def task_one() -> Dict([str, str]):
+    
+    green_file_path = "green_taxi_data.csv"
+    yellow_file_path = "yellow_taxi_data.csv"
+
+    return {"yellow_taxi_path": green_file_path, "green_taxi_path": yellow_file_path}
+
+
+@task.python
+def task_two(yellow_path, green_path):
+    
+    print(yellow_path, green_path)
+
+
+# dag definition
+@dag(...)
+def my_dag():
+
+    taxi_file_path = task_one()
+
+    task_two(taxi_file_path['yellow_taxi_path'], taxi_file_path['green_taxi_path'])
+
+dag = my_dag()
+
+```
+
+<p align="justify">
+&ensp;&ensp;&ensp;&ensp;TThis way still pushes a third XCOM message containing a non separated dictionary of the variables. In order to avoid this, we only have to set another parameters to the decorator: 
+</p>
+
+```do_xcom_push=False```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
