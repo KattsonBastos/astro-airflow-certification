@@ -202,7 +202,7 @@ with DAG(...) as dag:
 
 ```python
 # imports
-from airflow.operators import task
+from airflow.decorators import task
 [...]  # collapsed for simplicity
 
 # python tasks definition
@@ -224,7 +224,7 @@ with DAG(...) as dag:
 
 ```python
 # imports
-from airflow.operators import task
+from airflow.decorators import task
 [...]  # collapsed for simplicity
 
 # python tasks definition
@@ -263,7 +263,7 @@ dag = my_dag()
 
 ```python
 # imports
-from airflow.operators import task
+from airflow.decorators import task
 [...]  # collapsed for simplicity
 
 
@@ -299,7 +299,7 @@ dag = my_dag()
 
 ```python
 # imports
-from airflow.operators import task
+from airflow.decorators import task
 [...]  # collapsed for simplicity
 
 
@@ -336,7 +336,7 @@ dag = my_dag()
 
 ```python
 # imports
-from airflow.operators import task
+from airflow.decorators import task
 from tipyng import Dict
 [...]  # collapsed for simplicity
 
