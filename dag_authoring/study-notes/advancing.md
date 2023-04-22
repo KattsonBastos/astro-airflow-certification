@@ -13,6 +13,8 @@
 ## Contents
 - <a href="#dynamic_tasks">Not So Dynamic DAGs</a>
 - <a href="#branching">Branching Operator: choosing between tasks</a>
+- <a href="#trigger_rules">Trigger Rules</a>
+- <a href="#deps_helpers">Dependencies and Helpers</a>
 
 ---
 <p id="dynamic_tasks"></p>
@@ -209,7 +211,7 @@ dag = chooser_dag()
 <p>
 &ensp;&ensp;&ensp;&ensp;😯 It skipped the 'end' task, even though the task_two was succesfully executed. But, why? 🤔
 <br>
-&ensp;&ensp;&ensp;&ensp;That's where the concept of Trigger Rules comes into place. Well, a task is ging to be executed based on upstream execution status. So, we can choose to execute a task whether the upstream skipped, failed, succeed, and so on. In order to fix our code and execute the 'end' task in case task_one or task_two have succeedded, we have to add the following argument to the task:
+&ensp;&ensp;&ensp;&ensp;That's where the concept of Trigger Rules comes into place. Well, a task is ging to be executed based on upstream execution status. So, we can choose to execute a task whether the upstream skipped, failed, succeed, and so on. In order to fix our code and execute the 'end' task in case task_one or task_two have succeeded, we have to add the following argument to the task:
 </p>
 
 ```python
@@ -218,13 +220,85 @@ end = EmptyOperator(task_id="end", trigger_rule='none_failed_or_skipped')
 
 ```
 
-<p align='center'>
-<img src="../images/branching_success.png" alt="drawing" width="60%"/>
-</p>
-
 <p>
 &ensp;&ensp;&ensp;&ensp;Now we have the desired output.
 </p>
 
+<p align='center'>
+<img src="../images/branching_success.png" alt="drawing" width="60%"/>
+</p>
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+<p id="trigger_rules"></p>
+  
+## Trigger Rules
+
+<p>
+&ensp;&ensp;&ensp;&ensp;Trigger Rules define the behavior of our tasks: how it is going to be triggered. By default, the trigger rule of a task is 'all_success', that means our task will be executed only if all its parents have succeeded. We have other options for task trigerring:
+</p>
+
+<p align="center">
+<table>
+<thead>
+  <tr>
+    <th>Trigger Rule</th>
+    <th>Description</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>all_success</td>
+    <td>(default) all parents have succeeded..</td>
+  </tr>
+  <tr>
+    <td>all_failed</td>
+    <td>all parents are in a failed or upstream_failed state.</td>
+  </tr>
+  <tr>
+    <td>all_done</td>
+    <td>all parents are done with their execution.</td>
+  </tr>
+  <tr>
+    <td>one_failed</td>
+    <td>fires as soon as at least one parent has failed, it does not wait for all parents to be done.</td>
+  </tr>
+  <tr>
+    <td>one_success</td>
+    <td>fires as soon as at least one parent succeeds, it does not wait for all parents to be done</td>
+  </tr>
+  <tr>
+    <td>none_failed</td>
+    <td>all parents have not failed (failed or upstream_failed) i.e. all parents have succeeded or been skipped.</td>
+  </tr>
+  <tr>
+    <td>none_skipped</td>
+    <td>no parent is in a skipped state, i.e. all parents are in a success, failed, or upstream_failed state</td>
+  </tr>
+  <tr>
+    <td>none_failed_or_skipped </td>
+    <td>(berfore Airflow 2.2) no parent have failed and at least one have succeeded.</td>
+  </tr>
+  <tr>
+    <td>dummy</td>
+    <td>aadependencies are just for show, trigger at willa</td>
+  </tr>
+</tbody>
+</table>
+</p>
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+<p id="deps_helpers"></p>
+  
+## Dependencies and Helpers
+
+<p>
+&ensp;&ensp;&ensp;&ensp;Trigger Rules define the behavior of our tasks: how it is going to be triggered. By default, the trigger rule of a task is 'all_success', that means our task will be executed only if all its parents have succeeded. We have other options for task trigerring:
+</p>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
