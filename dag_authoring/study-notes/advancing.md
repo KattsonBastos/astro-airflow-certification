@@ -298,7 +298,94 @@ end = EmptyOperator(task_id="end", trigger_rule='none_failed_or_skipped')
 ## Dependencies and Helpers
 
 <p>
-&ensp;&ensp;&ensp;&ensp;Trigger Rules define the behavior of our tasks: how it is going to be triggered. By default, the trigger rule of a task is 'all_success', that means our task will be executed only if all its parents have succeeded. We have other options for task trigerring:
+&ensp;&ensp;&ensp;&ensp;Depending on our use case, managing dependencies between tasks could be a little hard. COnsider the following DAG example:
 </p>
+
+```python
+# imports
+from datetime import datetime
+from airflow.decorators import dag
+from airflow.operators.empty import EmptyOperator
+
+# dag definition
+@dag(catchup=False, schedule=None, start_date=datetime(2023,1,1))
+def dep_dag():
+
+    t1 = EmptyOperator(task_id='t1')
+    t2 = EmptyOperator(task_id='t2')
+    t3 = EmptyOperator(task_id='t3')
+
+    t4 = EmptyOperator(task_id='t4')
+    t5 = EmptyOperator(task_id='t5')
+    t6 = EmptyOperator(task_id='t6')
+
+dep_dag()
+
+```
+
+<p>
+&ensp;&ensp;&ensp;&ensp;How should we specify the dependencies in case both t4, t5 and t6 depends on t1, t2 and t3? That is, t4 will have dependencies on all t1,t2 and t3 (the same for t5 and t6), something like this:
+</p>
+
+<p align='center'>
+<img src="../images/deps_dag.png" alt="drawing" height="10%" />
+</p>
+
+<p>
+&ensp;&ensp;&ensp;&ensp;Maybe we could do the following:
+</p>
+
+```python
+[t1, t2, t3] >> [t4, t5, 6]
+
+```
+
+<p>
+&ensp;&ensp;&ensp;&ensp;Not good. Airflow will return an error saying it cannot set dependencies between list. What about this one:
+</p>
+
+```python
+[t1, t2, t3] >> t4
+[t1, t2, t3] >> t5
+[t1, t2, t3] >> t6
+
+```
+
+<p>
+&ensp;&ensp;&ensp;&ensp;That actually works. however, that's a lot or work just for setting dependencies, isn't it? Airflow brings a more sophisticated way of doing that: cross_downstream. Basically, we just have to do the following:
+</p>
+
+```python
+cross_downstream([t1, t2, t3], [t4, t5, t6])
+
+```
+
+<p>
+&ensp;&ensp;&ensp;&ensp;What if we wanted to add task at the beginning and another at the end of the DAG, something like this:
+</p>
+
+<p align='center'>
+<img src="../images/cross_chain.png" alt="drawing" height="10%" />
+</p>
+
+<p>
+&ensp;&ensp;&ensp;&ensp;Is there an easy of of doing it? Yes, there is!! Here another function comes in handy: chain. Chain allows to set dependencies just like the bitwise (>>), but in a much more sophisticated way. Just for example:
+</p>
+
+```python
+# t1 >> t2 >> t3
+chain(t1, t2, t3)
+
+```
+
+<p>
+&ensp;&ensp;&ensp;&ensp;In this way, the last image graph can be created with the following code:
+</p>
+
+```python
+cross_downstream([t1, t2, t3], [t4, t5, t6])
+chain(start, [t1, t2, t3], [t4, t5, t6], end)
+
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
