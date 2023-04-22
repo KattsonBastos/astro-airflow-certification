@@ -15,6 +15,8 @@
 - <a href="#branching">Branching Operator: choosing between tasks</a>
 - <a href="#trigger_rules">Trigger Rules</a>
 - <a href="#deps_helpers">Dependencies and Helpers</a>
+- <a href="#pools">Pools: dealing with tasks resource consuming</a>
+
 
 ---
 <p id="dynamic_tasks"></p>
@@ -417,6 +419,57 @@ chain(start, [t1, t2, t3], [t4, t5, t6], end)
 </p>
 
 - **task_concurrency**: the number of executions of that task at the same time <strong>across all DagRuns</strong> of that DAG.
-- **pool**dis: limiting the number of parallel tasks using a pool. We'll see more in the next section.
+- **pool**: limiting the number of parallel tasks using a pool. We'll see more in the next section.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+<p id="pools"></p>
+  
+## Pools: dealing with tasks resource consuming
+
+<p>
+&ensp;&ensp;&ensp;&ensp;What if we have tasks in our DAG that we want to run once per time and others that can be run at the same time? To better ilustrates this, consider the following example. Supose we have a Machine Learing pipeline:
+</p>
+
+<p align='center'>
+<img src="../images/fake_ml.png" alt="drawing" width="60%" />
+</p>
+
+<p>
+&ensp;&ensp;&ensp;&ensp;Usually, ML model training consumes a lot of resources. So, executing them at the same time could be a good idea. On the other hand, testing don't usually consumes too many resources. So, those tasks can be executed at the same time. How can we set these rules? Simple, by using pools.
+<br>
+&ensp;&ensp;&ensp;&ensp;A pool has a number of worker slots and a running task takes one of that slots untill it gets completed. By default, all tasks runs on the same pool, called default_pool. In the UI, navigating to Admin -> Pools we can see the available pool list. The default pool is there with the following default values:
+</p>
+
+<p align='center'>
+<img src="../images/default_pool.png" alt="drawing" width="60%" />
+</p>
+
+<p>
+&ensp;&ensp;&ensp;&ensp;So, to solve our previous problem, we can create a pool with only one slot and set it to our tasks. To create a pool, jsut go to Admin -> Pools, and then create in the add button. Type something like this:
+</p>
+
+<p align='center'>
+<img src="../images/create_pool.png" alt="drawing" width="60%" />
+</p>
+
+<p>
+&ensp;&ensp;&ensp;&ensp;Good. Now we just have to add the created pool to our task. It's something like this:
+</p>
+
+```python
+@task.python(task_id="train_model_1", pool="ml_model_training")
+
+```
+
+<p>
+&ensp;&ensp;&ensp;&ensp;Then we just have to trigger our DAG and check the execution. You'll se it will run one training task at a time. The remains with the 'scheduled' status.
+</p>
+
+<p align='center'>
+<img src="../images/running_pool.png" alt="drawing" width="60%" />
+</p>
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
