@@ -389,3 +389,34 @@ chain(start, [t1, t2, t3], [t4, t5, t6], end)
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+<p id="dynamic_tasks"></p>
+  
+## Concurrency
+
+<p>
+&ensp;&ensp;&ensp;&ensp;A very important concept in Airlfow is the concurrency, because with it we can configure how many tasks, DagRuns, and so on will be executed at the same time. In Airflow, we can set those configurations at the Airflow level (using a configuration file), at teh DAG level or at the task level, when definin it. First, let's take a look at what parameters we can specify in the config file
+</p>
+
+- **paralellism** (default: 32): the number of tasks that can be executed at the same time <strong>in our entire Airflow instance</strong>.
+- **dag_concurrency** (default: 16): the number of tasks that can be executed at the same time <strong>for a given DAG</strong>.
+- **max_active_runs_per_dag** (default: 16): the number of DagRuns that can be executed at the same time <strong>for a given DAG</strong>.
+
+
+<p>
+&ensp;&ensp;&ensp;&ensp;At the DAG level (when defining the DA), we can specify two parameters:
+</p>
+
+- **concurrency**: the number of tasks that can be executed at the same time <strong>across all DagRuns</strong> of that DAG.
+- **max_active_runs**: the number of DagRuns that can be executed at the same time for that DAG.
+
+
+<p>
+&ensp;&ensp;&ensp;&ensp;At the task level we also have two parameters:
+</p>
+
+- **task_concurrency**: the number of executions of that task at the same time <strong>across all DagRuns</strong> of that DAG.
+- **pool**dis: limiting the number of parallel tasks using a pool. We'll see more in the next section.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
