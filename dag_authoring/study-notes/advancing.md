@@ -141,8 +141,90 @@ dag = taxi_driver_info()
 </p>
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;Basically, it will execute task_one on mondays, tuesdays, and wednesdays; task_two on thursdays and fridays; otherwise, it stopps. You can find the entire code <a href="https://github.com/KattsonBastos/astro-airflow-certification/blob/main/dag_authoring/astro/dags/branching_operator_example.py
-">here</a>.
+&ensp;&ensp;&ensp;&ensp;Basically, it will execute task_one on mondays, tuesdays, and wednesdays; task_two on thursdays, fridays, and saturdays; otherwise, it stopps. You can find the entire code <a href="https://github.com/KattsonBastos/astro-airflow-certification/blob/main/dag_authoring/astro/dags/branching_operator_example.py
+">here</a>. First, we implemented the tasks and the conditioning function:
 </p>
+
+```python
+# task defitnition
+@task.python
+def task_one():
+
+    print("I'm the first")
+
+
+@task.python
+def task_two():
+
+    print("I'm the second")
+
+
+def _choosing_task_based_on_day(execution_date):
+    today_day = execution_date.day_of_week
+
+    if (today_day in (1,2,3)):
+        return 'task_one'
+    
+    elif (today_day in (4,5,6)):
+        return 'task_two'
+    
+    else:
+        return 'stop'
+
+```
+
+<p>
+&ensp;&ensp;&ensp;&ensp;In this case, we're branching based on the execution date. Then, we are able to implement the DAG. Notice that just by returning the task id it automatically choose the corresponding task for us.
+</p>
+
+```python
+# dag definition
+@dag(catchup=False, schedule=None, default_args=default_args, max_active_runs=1)
+def chooser_dag():
+
+    start = EmptyOperator(task_id="start")
+    end = EmptyOperator(task_id="end")
+    stop = EmptyOperator(task_id="stop")
+
+    choosing_task_based_on_day = BranchPythonOperator(
+        task_id='choosing_task_based_on_day',
+        python_callable=_choosing_task_based_on_day
+    )
+
+    start >> choosing_task_based_on_day >> stop
+    chain(start, choosing_task_based_on_day, [task_one(), task_two()], end)
+
+dag = chooser_dag()
+
+```
+
+<p>
+&ensp;&ensp;&ensp;&ensp;So beautiful, isn't it? So, let's execute the DAG. After some seconds, we'll see the following:
+</p>
+
+<p align='center'>
+<img src="../images/branching_skipped.png" alt="drawing" width="60%"/>
+</p>
+
+<p>
+&ensp;&ensp;&ensp;&ensp;😯 It skipped the 'end' task, even though the task_two was succesfully executed. But, why? 🤔
+<br>
+&ensp;&ensp;&ensp;&ensp;That's where the concept of Trigger Rules comes into place. Well, a task is ging to be executed based on upstream execution status. So, we can choose to execute a task whether the upstream skipped, failed, succeed, and so on. In order to fix our code and execute the 'end' task in case task_one or task_two have succeedded, we have to add the following argument to the task:
+</p>
+
+```python
+#end = EmptyOperator(task_id="end")
+end = EmptyOperator(task_id="end", trigger_rule='none_failed_or_skipped')
+
+```
+
+<p align='center'>
+<img src="../images/branching_success.png" alt="drawing" width="60%"/>
+</p>
+
+<p>
+&ensp;&ensp;&ensp;&ensp;Now we have the desired output.
+</p>
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
