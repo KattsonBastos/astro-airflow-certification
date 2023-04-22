@@ -471,5 +471,18 @@ chain(start, [t1, t2, t3], [t4, t5, t6], end)
 <img src="../images/running_pool.png" alt="drawing" width="60%" />
 </p>
 
+<p>
+&ensp;&ensp;&ensp;&ensp;Another useful pool functionality in Airflow is the number of slots a task will take. The thing is that the pool need to have at least the number of pools we specified. The use is simple:
+</p>
+
+
+```python
+@task.python(task_id="loading_data", pool="loading_data_pool", pool_slots=4)
+
+```
+
+<p>
+&ensp;&ensp;&ensp;&ensp;Finally, the last thing about pools is that if we're using SubDagOperator and we want to specify a pool to its tasks, we have to pass the parameters to all tasks in the sub dag.
+</p>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
