@@ -539,6 +539,16 @@ def task_three():
 
 <p>
 &ensp;&ensp;&ensp;&ensp;In the image above, since task one has not past dependenycy, it was triggered regardless of the previous execution status.
+<br>
+&ensp;&ensp;&ensp;&ensp;An argument we can use together with past dependency is the 'wait_for_downstream'. It means the current task will be triggered only if the previous execution and its direct downstream have succeeded. Let's consider the previous example again, but this time the dependency is on the previous execution and the the downsteam task (task three). The image bellow ilustrates this:
+</p>
+
+<p align='center'>
+<img src="../images/task_wait_failed.png" alt="drawing" width="60%" />
+</p>
+
+<p>
+&ensp;&ensp;&ensp;&ensp;In this case, even though the previous execution of task_two has succeed, it didn't get triggred. Why? Well, in this example we setted the wait for downstream (which is the task_three), that in turn failed. So, task_two has no status:.
 </p>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
