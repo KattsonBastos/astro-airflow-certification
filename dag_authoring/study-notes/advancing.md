@@ -16,7 +16,8 @@
 - <a href="#trigger_rules">Trigger Rules</a>
 - <a href="#deps_helpers">Dependencies and Helpers</a>
 - <a href="#pools">Pools: dealing with tasks resource consuming</a>
-
+- <a href="#critical_tasks">Task Priority: executing critical tasks first, the others after</a>
+- <a href="#past_dep">Dependency on Past: when a task needs the output of its previous execution</a>
 
 ---
 <p id="dynamic_tasks"></p>
@@ -484,5 +485,47 @@ chain(start, [t1, t2, t3], [t4, t5, t6], end)
 <p>
 &ensp;&ensp;&ensp;&ensp;Finally, the last thing about pools is that if we're using SubDagOperator and we want to specify a pool to its tasks, we have to pass the parameters to all tasks in the sub dag.
 </p>
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+<p id="critical_tasks"></p>
+  
+## Task Priority: executing critical tasks first, the others after
+
+<p>
+&ensp;&ensp;&ensp;&ensp;In a case where we have a data pipeline that contains critical tasks, or a task that needs to be executed first for any reason, or, yet, a DAG that we want to execute first when some resource is available, is it possible to specify the priority. That's what's we'll see in this section.
+<br>
+&ensp;&ensp;&ensp;&ensp;To deal with this setting in Airflow we only have to set and manage the piority weight parameters in the task definition. That is, if we have three tasks, we can set a priority weight to each of them. The higher this number is, the higher the priority. Let's see a simple example:
+</p>
+
+```python
+@task.python(task_id='task_one', priority_weight=3)
+def task_one():
+  print('Hi!')
+
+
+@task.python(task_id='task_two', priority_weight=1)
+def task_two():
+  print('Hi!')
+
+
+@task.python(task_id='task_three', priority_weight=2)
+def task_three():
+  print('Hi!')
+
+```
+
+<p>
+&ensp;&ensp;&ensp;&ensp;In this case, task_one will be executed first, then the task_three and, finally, the task_two. But there's an important thing here. the priorities are evaluated at the pool level, that is, having different tasks in different pools, the task priorities won't be evaluated.
+</p>
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+<p id="past_dep"></p>
+  
+## Dependency on Past: when a task needs the output of its previous execution
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
