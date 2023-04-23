@@ -527,5 +527,18 @@ def task_three():
   
 ## Dependency on Past: when a task needs the output of its previous execution
 
+<p>
+&ensp;&ensp;&ensp;&ensp;Let's suppose our task deppends on its previous execution.That is, it will be triggered if and only if the previous execution succeeded. In Airflow all operators have a parameters to specify this behavior: depends_on_past. This parameter can be used in only one task of our DAG or even in all tasks.
+<br>
+&ensp;&ensp;&ensp;&ensp;To better understand it, let's consider the following example. Suppose we have a DAG with three tasks and the second task depends on past. Also, suppose we have triggered our DAG twice: in the first execution, task two failed. What do you thing is going to happen to that task two in the second DagRun? Well, no errors will appear, it just won't be triggered at all.
+</p>
+
+<p align='center'>
+<img src="../images/task_dep_failed.png" alt="drawing" width="60%" />
+</p>
+
+<p>
+&ensp;&ensp;&ensp;&ensp;In the image above, since task one has not past dependenycy, it was triggered regardless of the previous execution status.
+</p>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
