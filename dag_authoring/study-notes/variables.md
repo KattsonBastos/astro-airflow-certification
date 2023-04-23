@@ -1,6 +1,6 @@
 # Mastering Variables
 
-[back to dag authoring page](https://github.com/KattsonBastos/astro-airflow-certification/tree/main/fundamentals)
+[back to dag authoring page](https://github.com/KattsonBastos/astro-airflow-certification/tree/main/dag_authoring)
 
 <p align="justify">
 &ensp;&ensp;&ensp;&ensp;Let's suppose we have multiple pipelines that use, let's say, the same GCS bucket. Should we put the bucket name inside all of our DAGs? That would be a such bad idea, since if for some reason we need to change the bucket path, we should edit DAG by DAG. So, what's the solution for this problem? That's where Airlfow's Variables comes in. In this section we'll talk a little bit about them.

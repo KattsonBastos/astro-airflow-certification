@@ -1,6 +1,6 @@
 # Dag Dependencies
 
-[back to dag authoring page](https://github.com/KattsonBastos/astro-airflow-certification/tree/main/fundamentals)
+[back to dag authoring page](https://github.com/KattsonBastos/astro-airflow-certification/tree/main/dag_authoring)
 
 
 <a name="readme-top"></a>

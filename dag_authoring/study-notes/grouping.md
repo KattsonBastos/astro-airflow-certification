@@ -1,6 +1,6 @@
 # Grouping Tasks
 
-[back to dag authoring page](https://github.com/KattsonBastos/astro-airflow-certification/tree/main/fundamentals)
+[back to dag authoring page](https://github.com/KattsonBastos/astro-airflow-certification/tree/main/dag_authoring)
 
 <p align="justify">
 &ensp;&ensp;&ensp;&ensp;Sometimes we end up with a lot of tasks inside our DAG, become harder to understand what's happening in the DAG. A good way make it cleaner could be grouping tasks that are related to each other. Airflow allows us to do that, and we can do it in two different ways. In this section We'll brieflly take a look at them.

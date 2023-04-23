@@ -1,6 +1,6 @@
 # Advanced Concepts
 
-[back to dag authoring page](https://github.com/KattsonBastos/astro-airflow-certification/tree/main/fundamentals)
+[back to dag authoring page](https://github.com/KattsonBastos/astro-airflow-certification/tree/main/dag_authoring)
 
 <p align="justify">
 &ensp;&ensp;&ensp;&ensp;Sometime we'll have a DAG with a lot of tasks that, for the same input, they do the same thing. For example, for three databases, we'll load the data, make some transformations and, then, load into a DW. Will we have to create one different operator for each task of each database? Actually, there's no need for that. In this section we'll see how to better approach this solution.
