@@ -10,4 +10,4 @@
 - [TaskFlow API](/dag_authoring/study-notes/taskflow.md)
 - [Grouping Tasks](/dag_authoring/study-notes/grouping.md)
 - [Advanced Concepts](/dag_authoring/study-notes/advancing.md)
-- [DAG Dependencies](/dag_authoring/study-notes/dependencies.md)
+- [DAG Dependencies](/dag_authoring/study-notes/dag_dependencies.md)
