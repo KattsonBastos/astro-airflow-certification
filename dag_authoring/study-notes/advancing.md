@@ -18,6 +18,10 @@
 - <a href="#pools">Pools: dealing with tasks resource consuming</a>
 - <a href="#critical_tasks">Task Priority: executing critical tasks first, the others after</a>
 - <a href="#past_dep">Dependency on Past: when a task needs the output of its previous execution</a>
+- <a href="#sensors">The World of Sensors</a>
+- <a href="#timeout">DAG and Task Timeout</a>
+
+
 
 ---
 <p id="dynamic_tasks"></p>
@@ -548,7 +552,50 @@ def task_three():
 </p>
 
 <p>
-&ensp;&ensp;&ensp;&ensp;In this case, even though the previous execution of task_two has succeed, it didn't get triggred. Why? Well, in this example we setted the wait for downstream (which is the task_three), that in turn failed. So, task_two has no status:.
+&ensp;&ensp;&ensp;&ensp;In this case, even though the previous execution of task_two has succeed, it didn't get triggred. Why? Well, in this example we setted the wait for downstream (which is the task_three), that in turn failed. So, task_two has no status.
 </p>
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+<p id="sensors"></p>
+  
+## The World of Sensors
+
+<p>
+&ensp;&ensp;&ensp;&ensp;Sensors are something liek an operators that waits for some condition to be satisfied before moving to the next task. Airflow have a lot of sensors types, wuch as datetime, file, s3 object, and so on. The use of sensors are very simple. Consider the following file sensor task:
+</p>
+
+```python
+sensor_task = FileSensor(
+    task_id="file_sensor_task", 
+    poke_interval= 60,
+    mode='poke', #default
+    filepath="/tmp/tmp_file.csv"
+)
+```
+
+<p>
+&ensp;&ensp;&ensp;&ensp;Here it is checking every 60 seconds for the file specified in the filepath. As simple as that, when the file lands in the directory, the workflow moves to the next task. The sensor will wait forever untill the file lands in the folder, consuming slot(s) from the pool (as we saw before, all tasks consume slots). That's not a good idea, since we're wasting resources with an idle task. This behavior was determined by the sensor mode 'poke'. Poke is usefull when we know it will wait just for a few minutes. If it'll have to wait for, let's say, 20, 30 minutes or higher, it is better use another argument: reschedule. With this mode the sensor will check the file every 60 seconds and, if it's not present, the worker slot will be released and 60 seconds later the sensor will check again.
+<br>
+&ensp;&ensp;&ensp;&ensp;Another argument is useful when dealing with sensors: timeout (7 days by default). It means sets that the sensor will waits until it timeout. In this case, there's no recommended value for this parameters, since we need a value that have a business meaning.
+<br>
+&ensp;&ensp;&ensp;&ensp;Finally, we have another useful parameters: exponencial_backoff. It allows us to exponencially increase the poke_interval after a non succeeded poke.
+</p>
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+<p id="timeout"></p>
+  
+## DAG and Task Timeout
+
+<p>
+&ensp;&ensp;&ensp;&ensp;In Airflow we can specify timeouts both at the DAG level and at the Task level. Actually, iti s a best practice to set in both, dag definition and operators definition.
+</p>
+
+- dagrun_timeout (DAG level): timeout for the DagRun execution
+- execution_timeout (Task level): timeout specified in the operator. By default, it has no value, which means the task won't be stopped if it takes a long long time to run.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
