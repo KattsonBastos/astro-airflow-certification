@@ -3,7 +3,7 @@
 [back to dag authoring page](https://github.com/KattsonBastos/astro-airflow-certification/tree/main/dag_authoring)
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;The Taskflow API paradigm was released in the versoin 2.0 of Airflow and brings us a new of of easily write DAGs. So, with fewer lines of code, we have the same pipeline, but, with this, it is easier to <strong>build</strong>, <strong>read</strong>, and <strong>maintain</strong>.
+&ensp;&ensp;&ensp;&ensp;The Taskflow API paradigm was released in the versoin 2.0 of Airflow and brings us a new of of easily write DAGs. So, with fewer lines of code, we have the same pipeline, but, with this, it is easier to <strong>build</strong>, <strong>read</strong>, and <strong>maintain</strong> it.
 </p>
 
 <a name="readme-top"></a>
