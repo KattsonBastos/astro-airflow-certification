@@ -23,7 +23,7 @@
 ## Introduction
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;The Taskflow AP,as we early said, makes DAG authoring easier without extra effort. It also brings another facility: now it's easier to share data between tasks, without needing to pull and push XCOMs. The API has three main aspects. They are:
+&ensp;&ensp;&ensp;&ensp;The Taskflow API, as we early said, makes DAG authoring easier without extra effort. It also brings another facility: now it's easier to share data between tasks, without needing to pull and push XCOMs. The API has three main aspects. They are:
 </p>
 
 1. **XCOM Args**: now the result of a python function task is inferred and automatically passed as a XCOM.
@@ -38,9 +38,9 @@
 ## Adding data at runtime with Template Engine
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;Airflow's operators have parameters that are or are not templated with the Template Engine, it will depends on each one (to check this, we need to see the docs of each operator). That is,  by default, we are able to pass data to an operator using the jinja template only if it is able to receive that. Let's see an example. Let's see an example.
+&ensp;&ensp;&ensp;&ensp;Airflow's operators have parameters that are or are not templated with the Template Engine, it depends on each one (to check this, we need to see the docs of each operator). That is, by default, we are able to pass data to an operator using the jinja template only if it is able to receive that. Let's see an example.
 <br>
-&ensp;&ensp;&ensp;&ensp;Let's imagine we're using the Postgres operator to make an operation in the database and we need to filter the only the data of the DagRun execution date. Well, the referred operator allows us to do this:
+&ensp;&ensp;&ensp;&ensp;Let's imagine we're using the Postgres operator to make an operation in the database and we need to filter only the data of the DagRun execution date. Well, the referred operator allows us to do this:
 </p>
 
 ```python
@@ -64,7 +64,7 @@ fetching_data = PostgresOperator(
 ```
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;In this way, the task will work the same as before. So far so goo, but what if for some reason we wanted to template a non-templated parameters, what should we do? Is it possible? the answer is: yes. To do that we basically have to create a custom operator. Let's take a non-templated PostgresOperator parameter. PostgresOperator has an optional parameter called 'parameters' that is not templated.
+&ensp;&ensp;&ensp;&ensp;In this way, the task will work the same as before. So far so good, but what if for some reason we wanted to template a non-templated parameter, what should we do? Is it possible? the answer is: yes. To do that we basically have to create a custom operator. Let's take a non-templated PostgresOperator parameter. PostgresOperator has an optional parameter called 'parameters' that is not templated.
 </p>
 
 
@@ -96,7 +96,7 @@ def fetch_taxi_data(...):
 ## The Traditional XCOM Way
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;XCOMs allows us to share data between tasks, such as a file path of an object and they're saved in the metadatabase by default. Even though they really come in handy, XCOMs have some limitations. There are a lot of ways to share XCOMs between tasks, let's see some examples.
+&ensp;&ensp;&ensp;&ensp;XCOMs allows us to share data between tasks, such as a file path of an object, and they're saved in the metadatabase by default. Even though they really come in handy, XCOMs have some limitations. There are a lot of ways to share XCOMs between tasks, let's see some examples.
 <br>
 &ensp;&ensp;&ensp;&ensp;The first way is by using the DagRun task_instance variable, as shows the following snippet:
 </p>
@@ -245,7 +245,7 @@ dag = my_dag()
 
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;In this case, without any other parameter in the task decorator, the function, the name of the function become the task name.
+&ensp;&ensp;&ensp;&ensp;In this case, without any other parameter in the task decorator, the function's name becomes the task name.
 </p>
 
 
@@ -292,9 +292,9 @@ dag = my_dag()
 ```
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;Did you notice the difference? Now, we can still kep return the value we want, but, to pull it in the next task, there no need to use the xcom_pull, we can just receive as a parameters and pass the first task as an argument to the second. By doing this way, the XCOM is automatically pushed and pulled and also the dependencies between the two tasks is automatically created.
+&ensp;&ensp;&ensp;&ensp;Did you notice the difference? Now, we can still kep return the value we want, but, to pull it in the next task, there no need to use the xcom_pull, we can just receive as a parameter and pass the first task as an argument to the second. By doing this way, the XCOM is automatically pushed and pulled and also the dependencies between the two tasks is automatically created.
 <br>
-&ensp;&ensp;&ensp;&ensp;What if we have multiple messages to share between the tasks? In the traditoinal way, we return a dicionary with multiple key-value pairs, but they are stored as a single message. What if we need to return two values as two different XCOMs, in the same task?
+&ensp;&ensp;&ensp;&ensp;What if we have multiple messages to share between the tasks? In the traditional way we return a dicionary with multiple key-value pairs, but they are stored as a single message. What if we need to return two values as two different XCOMs, in the same task?
 </p>
 
 ```python
@@ -331,7 +331,7 @@ dag = my_dag()
 ```
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;This automatically creates two XCOMs, one called yellow_taxi_path and another called green_taxi_path. However, there is another way of doing the same, just by specifying the output of the functoin:
+&ensp;&ensp;&ensp;&ensp;This automatically creates two XCOMs, one called yellow_taxi_path and another called green_taxi_path. However, there is another way of doing the same, just by specifying the output of the funtion:
 </p>
 
 ```python
@@ -369,7 +369,7 @@ dag = my_dag()
 ```
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;TThis way still pushes a third XCOM message containing a non separated dictionary of the variables. In order to avoid this, we only have to set another parameters to the decorator: 
+&ensp;&ensp;&ensp;&ensp;This way still pushes a third XCOM message containing a non separated dictionary of the variables. In order to avoid this, we only have to set another parameter to the decorator: 
 </p>
 
 ```do_xcom_push=False```
