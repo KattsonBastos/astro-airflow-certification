@@ -31,7 +31,7 @@ waiting_for_task = ExternalTaskSensor(
 ```
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;By specifying the external dag id and the desired task,it will wait for the completion of that task. It is important to remember that the sensor waits for the current executon date. If the external task takes longer than this time, the sensor will never succeed (and timeout after 7 days, by default).
+&ensp;&ensp;&ensp;&ensp;By specifying the external dag id and the desired task, it will wait for the completion of that task. It is important to remember that the sensor waits for the current executon date. If the external task takes longer than that time, the sensor will never succeed (and timeout after 7 days, by default).
 </p>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -58,12 +58,12 @@ waiting_for_task = TriggerDagRunOperator(
 
 ```
 
-- trigger_dag_id: the id of the DAG we want to trigger
-- execution_date: execution date we want to start the target DAG -> useful for backfilling
-- wait_for_completion: defines whether or not to wait for the target DAG completion before moving to the next task.
-- poke_interval: frequency it will check if the DagRun completed.
-- reset_dag_run: reset DagRun execution. useful in case of failure, that is, if the triggered DagRun fails, the only way to execute it again is by cleaning. This parameters helps with this.
-- failed_states: what states the task could expect to consider that the triggered DagRun have failed.
+- **trigger_dag_id**: the id of the DAG we want to trigger
+- **execution_date**: execution date we want to start the target DAG -> useful for backfilling
+- **wait_for_completion**: defines whether or not to wait for the target DAG completion before moving to the next task.
+- **poke_interval**: frequency it will check if the DagRun completed.
+- **reset_dag_run**: reset DagRun execution. useful in case of failure, that is, if the triggered DagRun fails, the only way to execute it again is by cleaning. This parameters helps with this.
+- **failed_states**: what states the task could expect to consider that the triggered DagRun have failed.
 
 <p align="justify">
 &ensp;&ensp;&ensp;&ensp;Even though it is similiar to a sensor, it is not.
