@@ -141,7 +141,7 @@ triggered_date = start_date + schedule_interval
 ```
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;Before we finish this section, let's consider an example. Suppose we have a DAG with a start_date at 10:00 AM and a schedule interval every 10 minutes. Here is a little confusion part of Airflow. Once the DAG is triggered at 10:10 AM (as we saw, start_date + schedule_interval, which is 10:00 AM + 10 minutes), the 10:00 becomes the <strong>execution_date</strong> of the running DagRun. Once the DagRun finishes its execution, the 10:10 AM becomes the start_date of the next DagRun and nothing happens until 10:20, when the second DagRun is effectively triggered. For this DagRun, 10:10 AM becomes it execution date and then, once it finishes, 10:20 AM becomes the start_date of the third DagRun, and so on.
+&ensp;&ensp;&ensp;&ensp;Before we finish this section, let's consider an example. Suppose we have a DAG with a start_date at 10:00 AM and a schedule interval every 10 minutes. Here is a little confusion part of Airflow. Once the DAG is triggered at 10:10 AM (as we saw, start_date + schedule_interval, which is 10:00 AM + 10 minutes), the 10:00 becomes the <strong>execution_date</strong> of the running DagRun. Once the DagRun finishes its execution, the 10:10 AM becomes the start_date of the next DagRun and nothing happens until 10:20, when the second DagRun is effectively triggered. For this DagRun, 10:10 AM becomes its execution date and then, once it finishes, 10:20 AM becomes the start_date of the third DagRun, and so on.
 </p>
 
 <p align="justify">
@@ -159,15 +159,15 @@ triggered_date = start_date + schedule_interval
 ## Cron vs Timedelta
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;There are two ways of defining our schedule interval parameter (or jsut schedule, for Airflow's version >= 2.4). They are:
+&ensp;&ensp;&ensp;&ensp;There are two ways of defining our schedule interval parameter (or just schedule, for Airflow's version >= 2.4). They are:
 </p>
 
-- Cron Expressions (stateless, absolute): an example is the '@daily", whih means "0 0 * * * ", that is, The DAG is going to be triggered at midnight of each day. For example, if the start_date if the first of january 2023, then the DagRun #1 is going to be triggered as the following (let's assume that now is 10 AM of 2023/01/01):<br><br>
+- Cron Expressions (stateless, absolute): an example is the '@daily", which means "0 0 * * * ", that is, The DAG is going to be triggered at midnight of each day. For example, if the start_date if the first of january 2023, then the DagRun #1 is going to be triggered as the following (let's assume that now is 10 AM of 2023/01/01):<br><br>
   -> 2023/01/02 00:00 <br>
   -> 2023/01/03 00:00 <br>
   -> so on..
 
-- Timedelta object (stateful, related to the last execution_date): in this case, the trigger date and time is different. Let's assume that now is 10 AM if 2023/01/01 and we schedule a DAG using the timedelta object, such as ```schedule_interval=timedelta(days=1)```. When do you think will our DAG be triggered? Let's see:<br><br>
+- Timedelta object (stateful, related to the last execution_date): in this case, the trigger date and time is different. Let's assume that now is 10 AM of 2023/01/01 and we scheduled a DAG using the timedelta object, such as ```schedule_interval=timedelta(days=1)```. When do you think will our DAG be triggered? Let's see:<br><br>
   -> 2023/01/02 10:00 AM<br>
   -> 2023/01/03 10:00 AM<br>
   -> so on..
@@ -189,7 +189,7 @@ triggered_date = start_date + schedule_interval
 &ensp;&ensp;&ensp;&ensp;There are two other important concepts to keep in mind when defining DAGs. Let's brief see what they mean.
 </p>
 
-- Determinism: means that if we execute a task with the same input, we should always get back always the same output.
+- Determinism: means that if we execute a task with the same input, we should always get back the same output.
 
 - Idempotent: if we execute our task multiple times, it should produce the same side effect.
 
@@ -204,7 +204,7 @@ triggered_date = start_date + schedule_interval
 ```
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;When execution that task twice, we should get an error, because in the second run the table already exists in the database. The appropriate way of doing that would be adding a ```IF NOT EXISTS``` clause in the query.
+&ensp;&ensp;&ensp;&ensp;When executing that task twice, we should get an error, because in the second run the table already exists in the database. The appropriate way of doing that would be adding a ```IF NOT EXISTS``` clause in the query.
 </p>
 
 <p align="justify">
@@ -239,7 +239,7 @@ triggered_date = start_date + schedule_interval
 </p>
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;As a best practice we usually keep that parameter as False in order to avoid a lot of DagRuns being triggered. Also, even we setted it to False, we still can backfill our DAGs with the following command:
+&ensp;&ensp;&ensp;&ensp;As a best practice we usually keep that parameter as False in order to avoid a lot of DagRuns being triggered. Also, even if we setted it to False, we still can backfill our DAGs with the following command through CLI:
 </p>
 
 ```bash
