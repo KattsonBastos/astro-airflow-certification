@@ -3,7 +3,7 @@
 [back to dag authoring page](https://github.com/KattsonBastos/astro-airflow-certification/tree/main/dag_authoring)
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;Sometimes we end up with a lot of tasks inside our DAG, become harder to understand what's happening in the DAG. A good way make it cleaner could be grouping tasks that are related to each other. Airflow allows us to do that, and we can do it in two different ways. In this section We'll brieflly take a look at them.
+&ensp;&ensp;&ensp;&ensp;Sometimes we end up with a lot of tasks inside our DAG, becoming hard to understand what's happening in the DAG. A good way to make it cleaner could be grouping tasks that are related to each other. Airflow allows us to do that, and we can do it in two different ways. In this section We'll brieflly take a look at them.
 </p>
 
 <a name="readme-top"></a>
@@ -89,9 +89,9 @@ def subdag_factory(parent_dag_id, subdag_dag_id, default_args):
 ```
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;We have to make sure the dag_id of the subdag is going to be the parent_dag_id.subdag_dag_id, otherwise it wont work. Notice that we're sharing default arguments between the two DAGs. That's because we have to make sure they have the same start date.
+&ensp;&ensp;&ensp;&ensp;We have to make sure the dag_id of the subdag is going to be the parent_dag_id.subdag_dag_id, otherwise it won't work. Notice that we're sharing default arguments between the two DAGs. That's because we have to make sure they have the same start date.
 <br>
-&ensp;&ensp;&ensp;&ensp;We have also to make sure there are no dependencies between a task from the main DAG and another task from the SubDAG: we'll get an error. For example, if we would like to use the person_name (returned from the task_zero) inside task_one or task_two, the first idea could be to pass it as a parameters to the subdag_factory function. 
+&ensp;&ensp;&ensp;&ensp;We have also to make sure there are no dependencies between a task from the main DAG and another task from the SubDAG: we'll get an error. For example, if we would like to use the person_name (returned from the task_zero) inside task_one or task_two, the first idea could be to pass it as a parameter to the subdag_factory function. 
 <br>
 &ensp;&ensp;&ensp;&ensp;However, Airflow does not allow us to do that. The right way of doing it was to use current execution context. That is, we should update our subdag code to the following: 
 </p>
@@ -126,7 +126,7 @@ def subdag_factory(parent_dag_id, subdag_dag_id, default_args):
 </p>
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;A lot of work, isn't it? That is. By doing so, we'll get the desired output. However, we could have done with a simpler way. That's what we're going to see in the next section.
+&ensp;&ensp;&ensp;&ensp;A lot of work, isn't it? By doing so, we'll get the desired output. However, we could have done with a simpler way. That's what we're going to see in the next section.
 </p>
 
 
@@ -193,7 +193,7 @@ dag = tf_dag()
 ```
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;Basically, we created a group of two tasks. The first one prints the person name; the second, the person job. Notice that we don't even needed to specify the dependencies between them: it is automatically setted to us. It was also easier to use XCOMs: we just returned the value and passed as a parameter to the subgroup tasks. We ended with the following pipeline:
+&ensp;&ensp;&ensp;&ensp;Basically, we created a group of two tasks. The first one prints the person's name; the second, the person's job. Notice that we didn't even need to specify the dependencies between them: it is automatically setted to us. It was also easier to use XCOMs: we just returned the value and passed as a parameter to the subgroup tasks. We ended with the following pipeline:
 </p>
 
 <p align='center'>
@@ -202,9 +202,9 @@ dag = tf_dag()
 
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;In order to keep our DAG as clean as possible, a TaskGroup can be imported from another file, the same way we can do with tasks. In this way, we coul move the above task group code to another file, inside a function, and import it. In order to better visualize, you can check the DAG <a href="https://github.com/KattsonBastos/astro-airflow-certification/blob/main/dag_authoring/astro/dags/taskflow_example.py
+&ensp;&ensp;&ensp;&ensp;In order to keep our DAG cleaner as possible, a TaskGroup can be imported from another file, the same way we can do with tasks. In this way, we could move the above task group code to another file, inside a function, and import it. In order to better visualize, you can check the DAG <a href="https://github.com/KattsonBastos/astro-airflow-certification/blob/main/dag_authoring/astro/dags/taskflow_example.py
 ">here</a> and the taskgroup file <a href="https://github.com/KattsonBastos/astro-airflow-certification/blob/main/dag_authoring/astro/dags/groups/other_printer_gp.py
-">here</a>. We kept the above example with the adition of a second group. That is, in the same DAG, we can have taskgroup defined inside teh dag and another taskgroup imported from another file. Follows the graph:
+">here</a>. We kept the above example with the adition of a second group. That is, in the same DAG, we can have taskgroups defined inside the dag and another taskgroup imported from another file. Follows the graph:
 </p>
 
 <p align='center'>
@@ -221,7 +221,7 @@ dag = tf_dag()
 </p>
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;There we can see how beatiful TaskFlow is. In this way, we can create as much nested task groups as we need.
+&ensp;&ensp;&ensp;&ensp;There we can see how beautiful TaskFlow is. In this way, we can create as much nested task groups as we need.
 </p>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
