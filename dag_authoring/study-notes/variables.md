@@ -109,7 +109,7 @@ def get_bucket_path():
 ### Template Engine
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;Ok. Now you could ask: what if I still wanted to fetch the variable outside the scope of the task without making a lot of connections with the database, is there a way? Again, yes, there is!! We can do that by using the template Engine. It is as simple as the other methods we saw. Imagine we have a variable 'taxi_info' that contains the taxi json we talked before. To fetch it using the template engine is basically just doing the following
+&ensp;&ensp;&ensp;&ensp;Ok. Now you could ask: what if I still wanted to fetch the variable outside the scope of the task without making a lot of connections with the database, is there a way? Again, yes, there is!! We can do that by using the template Engine. It is as simple as the other methods we saw. Imagine we have a variable 'taxi_info' that contains the taxi json we talked before. To fetch it using the template engine is basically the following
 </p>
 
 ```python
@@ -125,7 +125,7 @@ def test_variable():
 ```
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;In this way, the variable will be fetched only when the DAG runs. So, we can the fetched variable in the entire DAG.
+&ensp;&ensp;&ensp;&ensp;In this way, the variable will be fetched only when the DAG runs. So, we can variables in the entire DAG.
 </p>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -143,8 +143,9 @@ def test_variable():
 ```docker
 ENV AIRFLOW_VAR_STAGING_BUCKET_PATH=gs://some_bucket_path
 ```
+
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;Once added, just restart your Airflow instance. You'll notice that the variable is not displayed in the UI Variables sections, but it still can be feched in a DAG. To fetch it, we just have to keep doing the same as before, such as using the template engine:
+&ensp;&ensp;&ensp;&ensp;Once added, just restart your Airflow instance. You'll notice that the variable is not displayed in the UI Variable sections, but it still can be feched in a DAG. To fetch it, we just have to keep doing the same as before, such as using the template engine:
 </p>
 
 ```python
