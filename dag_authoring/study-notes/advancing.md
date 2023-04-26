@@ -3,7 +3,7 @@
 [back to dag authoring page](https://github.com/KattsonBastos/astro-airflow-certification/tree/main/dag_authoring)
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;Sometime we'll have a DAG with a lot of tasks that, for the same input, they do the same thing. For example, for three databases, we'll load the data, make some transformations and, then, load into a DW. Will we have to create one different operator for each task of each database? Actually, there's no need for that. In this section we'll see how to better approach this solution.
+&ensp;&ensp;&ensp;&ensp;Sometimes we'll have a DAG with a lot of tasks that, for the same input, they do the same thing. For example, for three databases, we'll load the data, make some transformations and, then, load into a DW. Will we have to create one different operator for each task of each database? Actually, there's no need for that. In this section we'll see how to better approach this solution.
 </p>
 
 <a name="readme-top"></a>
@@ -37,7 +37,7 @@
 </p>
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;Basically, we have taxi driver info, such as name, last name, and age, and we want to create a pipeline that reads that data, formats them and then prints them. The thing is that we want to do that for green and yellow taxi drivers. Usually, we could implement 4 operators, 2 per cab. However, there's no need for that. Let's first take a look at what DAG we could create. You can check the DAG file <a href="https://github.com/KattsonBastos/astro-airflow-certification/blob/main/dag_authoring/astro/dags/not_so_dynamic_tasks.py
+&ensp;&ensp;&ensp;&ensp;Basically, we have taxi driver info, such as name, last name, and age, and we want to create a pipeline that reads that data, formats, and then prints them. The thing is that we want to do that for green and yellow taxi drivers. Usually, we could implement 4 operators, 2 per cab. However, there's no need for that. Let's first take a look at what DAG we could create. You can check the DAG file <a href="https://github.com/KattsonBastos/astro-airflow-certification/blob/main/dag_authoring/astro/dags/not_so_dynamic_tasks.py
 ">here</a>.
 <br>
 &ensp;&ensp;&ensp;&ensp;The first thing we'll need is a dictionary. Consider the following:
@@ -60,13 +60,11 @@ taxis = {
 ```
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;Here we could have any configuration we wanted. For simplicity, we considered just one driver info per cab.
-<br>
-&ensp;&ensp;&ensp;&ensp;The next step is to define the tasks and the DAG. We'll have two tasks:
+&ensp;&ensp;&ensp;&ensp;Here we could have any configuration we wanted. For simplicity, we considered just one driver info per cab. The next step is to define the tasks and the DAG. We'll have two tasks:
 </p>
 
 ```python
-# task defitnition
+# task definition
 @task.python(task_id=f"formatting_info_{taxi_cab}", multiple_outputs=True)
     def formatting_info(fisrt_name, last_name):
         full_name = fisrt_name + last_name
@@ -82,7 +80,7 @@ def printing_info(full_name, age):
 ```
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;The first task receives driver's first and last name, then concat them, and, finally, returns it. The second task only prints that concatenated name and the drivers's age. you can notice in the referenced file that the first task is inside the for loop in the DAG. That's because we wanted to create a specific ID for the formatting task. in order to differenciate.
+&ensp;&ensp;&ensp;&ensp;The first task receives driver's first and last name, then concats them, and, finally, returns it. The second task only prints that concatenated name and the drivers's age. you can notice in the referenced file that the first task is inside the for loop in the DAG. That's because we wanted to create a specific ID for the formatting task, in order to differenciate them.
 </p>
 
 ```python
@@ -150,7 +148,7 @@ dag = taxi_driver_info()
 </p>
 
 <p align="justify">
-&ensp;&ensp;&ensp;&ensp;Basically, it will execute task_one on mondays, tuesdays, and wednesdays; task_two on thursdays, fridays, and saturdays; otherwise, it stopps. You can find the entire code <a href="https://github.com/KattsonBastos/astro-airflow-certification/blob/main/dag_authoring/astro/dags/branching_operator_example.py
+&ensp;&ensp;&ensp;&ensp;Basically, it will execute task_one on mondays, tuesdays, and wednesdays; task_two on thursdays, fridays, and saturdays; otherwise, it stops. You can find the entire code <a href="https://github.com/KattsonBastos/astro-airflow-certification/blob/main/dag_authoring/astro/dags/branching_operator_example.py
 ">here</a>. First, we implemented the tasks and the conditioning function:
 </p>
 
@@ -182,7 +180,7 @@ def _choosing_task_based_on_day(execution_date):
 
 ```
 
-<p>
+<p align='justify'>
 &ensp;&ensp;&ensp;&ensp;In this case, we're branching based on the execution date. Then, we are able to implement the DAG. Notice that just by returning the task id it automatically choose the corresponding task for us.
 </p>
 
@@ -207,7 +205,7 @@ dag = chooser_dag()
 
 ```
 
-<p>
+<p align='justify'>
 &ensp;&ensp;&ensp;&ensp;So beautiful, isn't it? So, let's execute the DAG. After some seconds, we'll see the following:
 </p>
 
@@ -215,10 +213,10 @@ dag = chooser_dag()
 <img src="../images/branching_skipped.png" alt="drawing" width="60%"/>
 </p>
 
-<p>
+<p align='justify'>
 &ensp;&ensp;&ensp;&ensp;😯 It skipped the 'end' task, even though the task_two was succesfully executed. But, why? 🤔
 <br>
-&ensp;&ensp;&ensp;&ensp;That's where the concept of Trigger Rules comes into place. Well, a task is ging to be executed based on upstream execution status. So, we can choose to execute a task whether the upstream skipped, failed, succeed, and so on. In order to fix our code and execute the 'end' task in case task_one or task_two have succeeded, we have to add the following argument to the task:
+&ensp;&ensp;&ensp;&ensp;That's where the concept of Trigger Rules comes into place. Well, a task is going to be executed based on upstream execution status. So, we can choose to execute a task whether the upstream skipped, failed, succeed, and so on. In order to fix our code and execute the 'end' task in case task_one or task_two have succeeded, we have to add the following argument to the task:
 </p>
 
 ```python
@@ -227,7 +225,7 @@ end = EmptyOperator(task_id="end", trigger_rule='none_failed_or_skipped')
 
 ```
 
-<p>
+<p align='justify'>
 &ensp;&ensp;&ensp;&ensp;Now we have the desired output.
 </p>
 
@@ -243,7 +241,7 @@ end = EmptyOperator(task_id="end", trigger_rule='none_failed_or_skipped')
   
 ## Trigger Rules
 
-<p>
+<p align='justify'>
 &ensp;&ensp;&ensp;&ensp;Trigger Rules define the behavior of our tasks: how it is going to be triggered. By default, the trigger rule of a task is 'all_success', that means our task will be executed only if all its parents have succeeded. We have other options for task trigerring:
 </p>
 
@@ -258,7 +256,7 @@ end = EmptyOperator(task_id="end", trigger_rule='none_failed_or_skipped')
 <tbody>
   <tr>
     <td>all_success</td>
-    <td>(default) all parents have succeeded..</td>
+    <td>(default) all parents have succeeded.</td>
   </tr>
   <tr>
     <td>all_failed</td>
@@ -304,8 +302,8 @@ end = EmptyOperator(task_id="end", trigger_rule='none_failed_or_skipped')
   
 ## Dependencies and Helpers
 
-<p>
-&ensp;&ensp;&ensp;&ensp;Depending on our use case, managing dependencies between tasks could be a little hard. COnsider the following DAG example:
+<p align='justify'>
+&ensp;&ensp;&ensp;&ensp;Depending on our use case, managing dependencies between tasks could be a little hard. Consider the following DAG example:
 </p>
 
 ```python
@@ -330,7 +328,7 @@ dep_dag()
 
 ```
 
-<p>
+<p align='justify'>
 &ensp;&ensp;&ensp;&ensp;How should we specify the dependencies in case both t4, t5 and t6 depends on t1, t2 and t3? That is, t4 will have dependencies on all t1,t2 and t3 (the same for t5 and t6), something like this:
 </p>
 
@@ -347,8 +345,8 @@ dep_dag()
 
 ```
 
-<p>
-&ensp;&ensp;&ensp;&ensp;Not good. Airflow will return an error saying it cannot set dependencies between list. What about this one:
+<p align='justify'>
+&ensp;&ensp;&ensp;&ensp;Not good. Airflow will return an error saying it cannot set dependencies between lists. What about this one:
 </p>
 
 ```python
@@ -358,8 +356,8 @@ dep_dag()
 
 ```
 
-<p>
-&ensp;&ensp;&ensp;&ensp;That actually works. however, that's a lot or work just for setting dependencies, isn't it? Airflow brings a more sophisticated way of doing that: cross_downstream. Basically, we just have to do the following:
+<p align='justify'>
+&ensp;&ensp;&ensp;&ensp;That actually works. However, that's a lot or work just for setting dependencies, isn't it? Airflow brings a more sophisticated way of doing that: cross_downstream. Basically, we just have to do the following:
 </p>
 
 ```python
@@ -367,15 +365,15 @@ cross_downstream([t1, t2, t3], [t4, t5, t6])
 
 ```
 
-<p>
-&ensp;&ensp;&ensp;&ensp;What if we wanted to add task at the beginning and another at the end of the DAG, something like this:
+<p align='justify'>
+&ensp;&ensp;&ensp;&ensp;What if we wanted to add a task at the beginning and another at the end of the DAG, something like this:
 </p>
 
 <p align='center'>
 <img src="../images/cross_chain.png" alt="drawing" height="10%" />
 </p>
 
-<p>
+<p align='justify'>
 &ensp;&ensp;&ensp;&ensp;Is there an easy of of doing it? Yes, there is!! Here another function comes in handy: chain. Chain allows to set dependencies just like the bitwise (>>), but in a much more sophisticated way. Just for example:
 </p>
 
@@ -402,8 +400,8 @@ chain(start, [t1, t2, t3], [t4, t5, t6], end)
   
 ## Concurrency
 
-<p>
-&ensp;&ensp;&ensp;&ensp;A very important concept in Airlfow is the concurrency, because with it we can configure how many tasks, DagRuns, and so on will be executed at the same time. In Airflow, we can set those configurations at the Airflow level (using a configuration file), at teh DAG level or at the task level, when definin it. First, let's take a look at what parameters we can specify in the config file
+<p align='justify'>
+&ensp;&ensp;&ensp;&ensp;A very important concept in Airlfow is the concurrency, because with it we can configure how many tasks, DagRuns, and so on will be executed at the same time. In Airflow, we can set those configurations at the Airflow level (using a configuration file), at the DAG level or at the task level, when defining it. First, let's take a look at what parameters we can specify in the config file:
 </p>
 
 - **paralellism** (default: 32): the number of tasks that can be executed at the same time <strong>in our entire Airflow instance</strong>.
@@ -411,15 +409,15 @@ chain(start, [t1, t2, t3], [t4, t5, t6], end)
 - **max_active_runs_per_dag** (default: 16): the number of DagRuns that can be executed at the same time <strong>for a given DAG</strong>.
 
 
-<p>
-&ensp;&ensp;&ensp;&ensp;At the DAG level (when defining the DA), we can specify two parameters:
+<p align='justify'>
+&ensp;&ensp;&ensp;&ensp;At the DAG level (when defining the DAG), we can specify two parameters:
 </p>
 
 - **concurrency**: the number of tasks that can be executed at the same time <strong>across all DagRuns</strong> of that DAG.
 - **max_active_runs**: the number of DagRuns that can be executed at the same time for that DAG.
 
 
-<p>
+<p align='justify'>
 &ensp;&ensp;&ensp;&ensp;At the task level we also have two parameters:
 </p>
 
@@ -433,16 +431,16 @@ chain(start, [t1, t2, t3], [t4, t5, t6], end)
   
 ## Pools: dealing with tasks resource consuming
 
-<p>
-&ensp;&ensp;&ensp;&ensp;What if we have tasks in our DAG that we want to run once per time and others that can be run at the same time? To better ilustrates this, consider the following example. Supose we have a Machine Learing pipeline:
+<p align='justify'>
+&ensp;&ensp;&ensp;&ensp;What if we have tasks in our DAG that we to run once per time and others that can be run at the same time? To better ilustrate this, consider the following example. Supose we have a Machine Learing pipeline:
 </p>
 
 <p align='center'>
 <img src="../images/fake_ml.png" alt="drawing" width="60%" />
 </p>
 
-<p>
-&ensp;&ensp;&ensp;&ensp;Usually, ML model training consumes a lot of resources. So, executing them at the same time could be a good idea. On the other hand, testing don't usually consumes too many resources. So, those tasks can be executed at the same time. How can we set these rules? Simple, by using pools.
+<p align='justify'>
+&ensp;&ensp;&ensp;&ensp;Usually, ML model training consumes a lot of resources. So, executing them at the same time could be a bad idea. On the other hand, testing don't usually consumes too many resources. So, those tasks can be executed at the same time. How can we set these rules? Simple, by using pools.
 <br>
 &ensp;&ensp;&ensp;&ensp;A pool has a number of worker slots and a running task takes one of that slots untill it gets completed. By default, all tasks runs on the same pool, called default_pool. In the UI, navigating to Admin -> Pools we can see the available pool list. The default pool is there with the following default values:
 </p>
@@ -451,15 +449,15 @@ chain(start, [t1, t2, t3], [t4, t5, t6], end)
 <img src="../images/default_pool.png" alt="drawing" width="60%" />
 </p>
 
-<p>
-&ensp;&ensp;&ensp;&ensp;So, to solve our previous problem, we can create a pool with only one slot and set it to our tasks. To create a pool, jsut go to Admin -> Pools, and then create in the add button. Type something like this:
+<p align='justify'>
+&ensp;&ensp;&ensp;&ensp;So, to solve our previous problem, we can create a pool with only one slot and set it to our tasks. To create a pool, just go to Admin -> Pools, and then create it in the add button. Type something like this:
 </p>
 
 <p align='center'>
 <img src="../images/create_pool.png" alt="drawing" width="60%" />
 </p>
 
-<p>
+<p align='justify'>
 &ensp;&ensp;&ensp;&ensp;Good. Now we just have to add the created pool to our task. It's something like this:
 </p>
 
@@ -468,16 +466,16 @@ chain(start, [t1, t2, t3], [t4, t5, t6], end)
 
 ```
 
-<p>
-&ensp;&ensp;&ensp;&ensp;Then we just have to trigger our DAG and check the execution. You'll se it will run one training task at a time. The remains with the 'scheduled' status.
+<p align='justify'>
+&ensp;&ensp;&ensp;&ensp;Then we just have to trigger our DAG and check the execution. You'll se it will run one training task at a time. The others remain with the 'scheduled' status.
 </p>
 
 <p align='center'>
 <img src="../images/running_pool.png" alt="drawing" width="60%" />
 </p>
 
-<p>
-&ensp;&ensp;&ensp;&ensp;Another useful pool functionality in Airflow is the number of slots a task will take. The thing is that the pool need to have at least the number of pools we specified. The use is simple:
+<p align='justify'>
+&ensp;&ensp;&ensp;&ensp;Another useful pool functionality in Airflow is the number of slots a task will take. The thing is that the pool needs to have at least the number of pools we specified. The use is simple:
 </p>
 
 
@@ -486,7 +484,7 @@ chain(start, [t1, t2, t3], [t4, t5, t6], end)
 
 ```
 
-<p>
+<p align='justify'>
 &ensp;&ensp;&ensp;&ensp;Finally, the last thing about pools is that if we're using SubDagOperator and we want to specify a pool to its tasks, we have to pass the parameters to all tasks in the sub dag.
 </p>
 
@@ -520,8 +518,8 @@ def task_three():
 
 ```
 
-<p>
-&ensp;&ensp;&ensp;&ensp;In this case, task_one will be executed first, then the task_three and, finally, the task_two. But there's an important thing here. the priorities are evaluated at the pool level, that is, having different tasks in different pools, the task priorities won't be evaluated.
+<p align='justify'>
+&ensp;&ensp;&ensp;&ensp;In this case, task_one will be executed first, then the task_three and, finally, the task_two. But there's an important thing here. The priorities are evaluated at the pool level, that is, having different tasks in different pools, the task priorities won't be evaluated.
 </p>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -531,17 +529,17 @@ def task_three():
   
 ## Dependency on Past: when a task needs the output of its previous execution
 
-<p>
-&ensp;&ensp;&ensp;&ensp;Let's suppose our task deppends on its previous execution.That is, it will be triggered if and only if the previous execution succeeded. In Airflow all operators have a parameters to specify this behavior: depends_on_past. This parameter can be used in only one task of our DAG or even in all tasks.
+<p align='justify'>
+&ensp;&ensp;&ensp;&ensp;Let's suppose our task deppends on its previous execution. That is, it will be triggered if and only if the previous execution succeeded. In Airflow all operators have a parameter to specify this behavior: depends_on_past. This parameter can be used in only one task of our DAG or even in all tasks.
 <br>
-&ensp;&ensp;&ensp;&ensp;To better understand it, let's consider the following example. Suppose we have a DAG with three tasks and the second task depends on past. Also, suppose we have triggered our DAG twice: in the first execution, task two failed. What do you thing is going to happen to that task two in the second DagRun? Well, no errors will appear, it just won't be triggered at all.
+&ensp;&ensp;&ensp;&ensp;To better understand it, let's consider the following example. Suppose we have a DAG with three tasks and the second task depends on past. Also, suppose we have triggered our DAG twice: in the first execution, task two failed. What do you think is going to happen to that task two in the second DagRun? Well, no errors will appear, it just won't be triggered at all.
 </p>
 
 <p align='center'>
 <img src="../images/task_dep_failed.png" alt="drawing" width="60%" />
 </p>
 
-<p>
+<p align='justify'>
 &ensp;&ensp;&ensp;&ensp;In the image above, since task one has not past dependenycy, it was triggered regardless of the previous execution status.
 <br>
 &ensp;&ensp;&ensp;&ensp;An argument we can use together with past dependency is the 'wait_for_downstream'. It means the current task will be triggered only if the previous execution and its direct downstream have succeeded. Let's consider the previous example again, but this time the dependency is on the previous execution and the the downsteam task (task three). The image bellow ilustrates this:
@@ -551,7 +549,7 @@ def task_three():
 <img src="../images/task_wait_failed.png" alt="drawing" width="60%" />
 </p>
 
-<p>
+<p align='justify'>
 &ensp;&ensp;&ensp;&ensp;In this case, even though the previous execution of task_two has succeed, it didn't get triggred. Why? Well, in this example we setted the wait for downstream (which is the task_three), that in turn failed. So, task_two has no status.
 </p>
 
@@ -562,8 +560,8 @@ def task_three():
   
 ## The World of Sensors
 
-<p>
-&ensp;&ensp;&ensp;&ensp;Sensors are something liek an operators that waits for some condition to be satisfied before moving to the next task. Airflow have a lot of sensors types, wuch as datetime, file, s3 object, and so on. The use of sensors are very simple. Consider the following file sensor task:
+<p align='justify'>
+&ensp;&ensp;&ensp;&ensp;Sensors are something like an operator that waits for some condition to be satisfied before moving to the next task. Airflow have a lot of sensors types, such as datetime, file, s3 object, and so on. The use of sensors is very simple. Consider the following file sensor task:
 </p>
 
 ```python
@@ -575,12 +573,12 @@ sensor_task = FileSensor(
 )
 ```
 
-<p>
+<p align='justify'>
 &ensp;&ensp;&ensp;&ensp;Here it is checking every 60 seconds for the file specified in the filepath. As simple as that, when the file lands in the directory, the workflow moves to the next task. The sensor will wait forever untill the file lands in the folder, consuming slot(s) from the pool (as we saw before, all tasks consume slots). That's not a good idea, since we're wasting resources with an idle task. This behavior was determined by the sensor mode 'poke'. Poke is usefull when we know it will wait just for a few minutes. If it'll have to wait for, let's say, 20, 30 minutes or higher, it is better use another argument: reschedule. With this mode the sensor will check the file every 60 seconds and, if it's not present, the worker slot will be released and 60 seconds later the sensor will check again.
 <br>
-&ensp;&ensp;&ensp;&ensp;Another argument is useful when dealing with sensors: timeout (7 days by default). It means sets that the sensor will waits until it timeout. In this case, there's no recommended value for this parameters, since we need a value that have a business meaning.
+&ensp;&ensp;&ensp;&ensp;Another argument is useful when dealing with sensors: timeout (7 days by default). It means the sensor will waits until it timeouts. In this case, there's no recommended value for this parameters, since we need a value that have a business meaning.
 <br>
-&ensp;&ensp;&ensp;&ensp;Finally, we have another useful parameters: exponencial_backoff. It allows us to exponencially increase the poke_interval after a non succeeded poke.
+&ensp;&ensp;&ensp;&ensp;Finally, we have another useful parameter: exponencial_backoff. It allows us to exponencially increase the poke_interval after a non succeeded poke.
 </p>
 
 
@@ -591,11 +589,11 @@ sensor_task = FileSensor(
   
 ## DAG and Task Timeout
 
-<p>
-&ensp;&ensp;&ensp;&ensp;In Airflow we can specify timeouts both at the DAG level and at the Task level. Actually, iti s a best practice to set in both, dag definition and operators definition.
+<p align='justify'>
+&ensp;&ensp;&ensp;&ensp;In Airflow we can specify timeouts both at the DAG level and at the Task level. Actually, it's a best practice to set in both, dag and operators definition.
 </p>
 
-- dagrun_timeout (DAG level): timeout for the DagRun execution
-- execution_timeout (Task level): timeout specified in the operator. By default, it has no value, which means the task won't be stopped if it takes a long long time to run.
+- **dagrun_timeout** (DAG level): timeout for the DagRun execution.
+- **execution_timeout** (Task level): timeout specified in the operator. By default, it has no value, which means the task won't be stopped if it takes a long time to run.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
