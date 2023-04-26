@@ -91,7 +91,7 @@ def fetch_taxi_data(...):
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ---
-<p id="tr_xcom"></p>
+<p id="tr_xcoms"></p>
   
 ## The Traditional XCOM Way
 
@@ -253,7 +253,7 @@ dag = my_dag()
 
 
 ---
-<p id="tf_xcom"></p>
+<p id="tf_xcoms"></p>
   
 ## The Taskflow API XCOM Way
 
